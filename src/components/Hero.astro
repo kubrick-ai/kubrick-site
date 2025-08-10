@@ -34,23 +34,27 @@ if (image) {
 
 <ContainerSection>
   <div class="hero">
-    {darkImage && <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />}
-    {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
-    {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
-    <h1 class="title" id={PAGE_TITLE_ID} data-page-title set:html={title} />
-    {tagline && <div class="tagline" set:html={tagline} />}
-    {
-      actions.length > 0 && (
-        <div class="actions">
-          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
-            <LinkButton {href} {variant} class:list={[className]} {...attrs}>
-              {text}
-              {icon?.html && <Fragment set:html={icon.html} />}
-            </LinkButton>
-          ))}
-        </div>
-      )
-    }
+    <div class="hero-image">
+      {darkImage && <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />}
+      {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
+      {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
+    </div>
+    <div class="hero-content">
+      <h1 class="title" id={PAGE_TITLE_ID} data-page-title set:html={title} />
+      {tagline && <div class="tagline" set:html={tagline} />}
+      {
+        actions.length > 0 && (
+          <div class="actions">
+            {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+              <LinkButton {href} {variant} class:list={[className]} {...attrs}>
+                {text}
+                {icon?.html && <Fragment set:html={icon.html} />}
+              </LinkButton>
+            ))}
+          </div>
+        )
+      }
+    </div>
   </div>
 </ContainerSection>
 
@@ -68,6 +72,9 @@ if (image) {
     .hero {
       padding-top: 3rem;
       padding-bottom: 3rem;
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
     }
   }
   @media (min-width: 768px) {
@@ -111,5 +118,15 @@ if (image) {
     justify-content: flex-start;
     align-items: center;
     gap: 0.5rem;
+  }
+
+  .hero-content {
+    flex: 1;
+  }
+
+  .hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
   }
 </style>
