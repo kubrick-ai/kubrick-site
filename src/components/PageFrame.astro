@@ -36,7 +36,10 @@ const { hasSidebar } = Astro.locals.starlightRoute
     <footer class="footer">
       <div class="container-wrapper">
         <div class="container footer-container">
-          <div class="footer-text" set:html={marked.parseInline(userConfig.footerText)} />
+          <div
+            class="footer-text"
+            set:html={userConfig.footerText && marked.parseInline(userConfig.footerText)}
+          />
         </div>
       </div>
     </footer>

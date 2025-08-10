@@ -1,4 +1,6 @@
-export const userConfig = {
+import type { StarlightThemeBlackUserConfig } from "./types";
+
+export const userConfig: StarlightThemeBlackUserConfig = {
   navLinks: [
     {
       label: "Case Study",
