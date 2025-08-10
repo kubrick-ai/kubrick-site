@@ -30,7 +30,7 @@ if (image) {
 }
 ---
 
-<section class="min-h-dvh w-full pb-20 flex items-center justify-center relative bg-[#FFDD82] hero-gradient">
+<section class="hero-container min-h-dvh w-full pb-20 flex items-center justify-center relative">
   <div class="max-w-5xl w-full px-12 flex flex-col md:flex-row items-center gap-4 md:gap-16 relative z-10">
     <div class="flex justify-center md:order-2 flex-1 order-1">
       {darkImage && <Image src={darkImage} {...imageAttrs} class:list={[{ 'light:sl-hidden': Boolean(lightImage) }, "w-48 h-48 md:w-80 md:h-80 object-contain"]} />}
@@ -57,37 +57,36 @@ if (image) {
 </section>
 
 <style>
-.hero-gradient {
+.hero-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: url('/src/assets/spectrum-gradient.svg');
   background-attachment: fixed;
   background-size: cover;
+  z-index: 0;
 }
 
-html[data-theme='dark'] .hero-gradient::after {
+html[data-theme='dark'] .hero-container::after {
+  opacity: 0.6;
+}
+
+.hero-container::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.hero-gradient::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(to bottom,
     var(--background) 0%,
     transparent 40%,
     transparent 50%,
     var(--background) 100% 
-   ); 
+   );
   pointer-events: none;
   z-index: 1;
 }
