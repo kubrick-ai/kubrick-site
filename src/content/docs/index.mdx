@@ -19,24 +19,97 @@ hero:
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 import ContainerSection from "../../components/ContainerSection.astro";
+import LinkedCard from "../../components/LinkedCard.astro";
+import LinkedCardGroup from "../../components/LinkedCardGroup.astro";
 
 <ContainerSection>
 
-## Next steps
+## The Problem
+
+Hours of video content sitting in archives, unsearchable except by filename or manual tagging. Finding specific moments, topics, or discussions across your video library becomes a time-consuming manual process.
+
+## The Solution
+
+Transform any video into a searchable knowledge base using AI-powered semantic understanding. Kubrick enables you to search by concepts, not just keywords - find "quarterly goals discussion" even if those exact words were never spoken.
+
+## Key Features
 
 <CardGrid>
-  <Card title="Update content" icon="pencil">
-    Edit `src/content/docs/index.mdx` to see this page change.
+  <Card title="Semantic Video Search" icon="magnifier">
+    Search by concepts and context, not just keywords. Find moments based on meaning and intent.
   </Card>
-  <Card title="Add new content" icon="add-document">
-    Add Markdown or MDX files to `src/content/docs` to create new pages.
+  <Card title="AI-Powered Understanding" icon="rocket">
+    Leverages TwelveLabs API for advanced video comprehension and content analysis.
   </Card>
-  <Card title="Configure your site" icon="setting">
-    Edit your `sidebar` and other config in `astro.config.mjs`.
+  <Card title="Self-Hosted Privacy" icon="lock">
+    Deploy on your own AWS infrastructure. Your data stays under your control.
   </Card>
-  <Card title="Read the docs" icon="open-book">
-    Learn more in [the Starlight Docs](https://starlight.astro.build/).
+  <Card title="API-First Architecture" icon="laptop">
+    RESTful endpoints for easy integration with your existing applications and workflows.
   </Card>
 </CardGrid>
+
+## Use Cases
+
+<CardGrid>
+  <Card title="Educational Institutions" icon="graduation">
+    Search lecture recordings and course materials by topic, concept, or specific discussion points.
+  </Card>
+  <Card title="Corporate Training" icon="star">
+    Find specific topics across training video libraries, onboarding content, and internal presentations.
+  </Card>
+  <Card title="Media & Entertainment" icon="puzzle">
+    Catalog and search video content archives, interview footage, and documentary materials.
+  </Card>
+  <Card title="Research Organizations" icon="document">
+    Analyze interview recordings, focus groups, and research documentation efficiently.
+  </Card>
+</CardGrid>
+
+## Technical Highlights
+
+Kubrick deploys a complete **serverless architecture on AWS** with enterprise-grade scalability:
+
+- **AWS Lambda** - Serverless compute for video processing and API logic
+- **API Gateway** - REST API endpoints with global edge locations
+- **CloudFront CDN** - Fast global video delivery and caching
+- **S3 + SQS** - Reliable storage and asynchronous processing queues
+- **RDS PostgreSQL** - Managed database with automated backups
+- **Enterprise Security** - IAM roles, Secrets Manager, and VPC isolation
+
+## Quick Start
+
+Get Kubrick running in minutes with our interactive CLI:
+
+```bash
+# Clone and build
+git clone https://github.com/kubrick-ai/kubrick.git
+cd kubrick && ./build-all-packages.sh
+
+# Deploy with CLI
+cd cli && npm run build
+kubrick deploy  # Interactive deployment wizard
+
+# Start searching your videos
+curl -X POST /api/ingest -F "video=@meeting.mp4"
+curl "/api/search?q=quarterly goals discussion"
+```
+
+## Next steps
+
+  <LinkedCardGroup>
+    <LinkedCard href="/case-study/intro">
+      **Case Study** - Learn how Kubrick works through a detailed example
+    </LinkedCard>
+    <LinkedCard href="/guides/get-started">
+      **Get Started** - Set up your own Kubrick instance
+    </LinkedCard>
+    <LinkedCard href="/api/reference">
+      **API Reference** - Explore the search and ingestion endpoints
+    </LinkedCard>
+    <LinkedCard href="/guides/deployment">
+      **Deployment** - Deploy Kubrick to production
+    </LinkedCard>
+  </LinkedCardGroup>
 
 </ContainerSection>
