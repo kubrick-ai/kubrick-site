@@ -60,11 +60,13 @@ if (image) {
 
 <style>
   .hero {
+    margin: 0 4rem ;
     padding-top: 2rem;
     padding-bottom: 2rem;
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
+    display: grid;
+    grid-template-areas: 
+      "image"
+      "content";
     gap: 0.25rem;
   }
 
@@ -72,7 +74,8 @@ if (image) {
     .hero {
       padding-top: 3rem;
       padding-bottom: 3rem;
-      flex-direction: row;
+      grid-template-areas: "content image";
+      grid-template-columns: 1fr 1fr;
       align-items: center;
       gap: 2rem;
     }
@@ -121,11 +124,11 @@ if (image) {
   }
 
   .hero-content {
-    flex: 1;
+    grid-area: content;
   }
 
   .hero-image {
-    flex: 1;
+    grid-area: image;
     display: flex;
     justify-content: center;
   }
