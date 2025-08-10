@@ -48,6 +48,7 @@ export default defineConfig({
         "@fontsource/geist-sans/700.css",
         "@fontsource/geist-sans/800.css",
         "@fontsource/geist-sans/900.css",
+        "./src/styles/global.css",
         "./src/styles/layers.css",
         "./src/styles/theme.css",
         "./src/styles/base.css",

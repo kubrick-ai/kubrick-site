@@ -2,8 +2,6 @@
 import { Image } from 'astro:assets'
 import type { ImageMetadata } from 'astro'
 import LinkButton from '../components/LinkButton.astro'
-
-import ContainerSection from '../components/ContainerSection.astro'
 import { PAGE_TITLE_ID } from '../constants'
 
 const { data } = Astro.locals.starlightRoute.entry
@@ -32,19 +30,19 @@ if (image) {
 }
 ---
 
-<ContainerSection>
-  <div class="hero">
-    <div class="hero-image">
-      {darkImage && <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />}
-      {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
-      {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
+<section class="min-h-dvh w-full pb-20 flex items-center justify-center relative bg-[#FFDD82] hero-gradient">
+  <div class="max-w-5xl w-full px-12 flex flex-col md:flex-row items-center gap-4 md:gap-16 relative z-10">
+    <div class="flex justify-center md:order-2 flex-1 order-1">
+      {darkImage && <Image src={darkImage} {...imageAttrs} class:list={[{ 'light:sl-hidden': Boolean(lightImage) }, "w-48 h-48 md:w-80 md:h-80 object-contain"]} />}
+      {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden w-48 h-48 md:w-80 md:h-80 object-contain" />}
+      {rawHtml && <div class="hero-html sl-flex w-48 h-48 md:w-80 md:h-80" set:html={rawHtml} />}
     </div>
-    <div class="hero-content">
-      <h1 class="title" id={PAGE_TITLE_ID} data-page-title set:html={title} />
-      {tagline && <div class="tagline" set:html={tagline} />}
+    <div class="md:order-1 flex-1 flex flex-col items-center md:items-start text-center md:text-left order-2">
+      <h1 class="tracking-tight leading-tight font-bold text-3xl md:text-4xl lg:text-5xl md:leading-tight" id={PAGE_TITLE_ID} data-page-title set:html={title} />
+      {tagline && <div class="text-foreground font-light text-lg leading-7 max-w-2xl mt-4" set:html={tagline} />}
       {
         actions.length > 0 && (
-          <div class="actions">
+          <div class="mt-8 flex gap-4 flex-wrap justify-center md:justify-start">
             {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
               <LinkButton {href} {variant} class:list={[className]} {...attrs}>
                 {text}
@@ -56,80 +54,42 @@ if (image) {
       }
     </div>
   </div>
-</ContainerSection>
+</section>
 
 <style>
-  .hero {
-    margin: 0 4rem ;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    display: grid;
-    grid-template-areas: 
-      "image"
-      "content";
-    gap: 0.25rem;
-  }
+.hero-gradient {
+  background-image: url('/src/assets/spectrum-gradient.svg');
+  background-attachment: fixed;
+  background-size: cover;
+}
 
-  @media (min-width: 1024px) {
-    .hero {
-      padding-top: 3rem;
-      padding-bottom: 3rem;
-      grid-template-areas: "content image";
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      gap: 2rem;
-    }
-  }
-  @media (min-width: 768px) {
-    .hero {
-      padding-top: 2.5rem;
-      padding-bottom: 2.5rem;
-    }
-  }
+html[data-theme='dark'] .hero-gradient::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 2;
+}
 
-  .title {
-    letter-spacing: -0.05em;
-    line-height: 1.25;
-    font-weight: 700;
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-  }
-  @media (min-width: 1024px) {
-    .title {
-      line-height: 1.1;
-    }
-  }
-  @media (min-width: 768px) {
-    .title {
-      font-size: 2.25rem;
-      line-height: 2.5rem;
-    }
-  }
-
-  .tagline {
-    color: var(--foreground);
-    font-weight: 300;
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    max-width: 42rem;
-  }
-
-  .actions {
-    width: 100%;
-    padding-top: 0.5rem;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .hero-content {
-    grid-area: content;
-  }
-
-  .hero-image {
-    grid-area: image;
-    display: flex;
-    justify-content: center;
-  }
+.hero-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom,
+    var(--background) 0%,
+    transparent 40%,
+    transparent 50%,
+    var(--background) 100% 
+   ); 
+  pointer-events: none;
+  z-index: 1;
+}
 </style>
+
