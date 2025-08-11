@@ -182,7 +182,7 @@ paths:
   /search:
     post:
       summary: Search for a video using text or media query
-      operationId: searchVideo
+      operationId: search
       requestBody:
         required: true
         content:

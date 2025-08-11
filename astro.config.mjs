@@ -38,7 +38,29 @@ export default defineConfig({
           label: "Reference",
           autogenerate: { directory: "ref" },
         },
-        ...openAPISidebarGroups,
+        // Using manual sidebar elements instead of auto-generated sidebar group
+        {
+          label: "API",
+          items: [
+            {
+              label: "Generate Upload Link",
+              link: "/api/operations/generateuploadlink/",
+              badge: "GET",
+            },
+            {
+              label: "Videos",
+              link: "/api/operations/getvideos/",
+              badge: "GET",
+            },
+            {
+              label: "Tasks",
+              link: "/api/operations/gettasks/",
+              badge: "GET",
+            },
+            { label: "Search", link: "/api/operations/search/", badge: "POST" },
+          ],
+        },
+        // ...openAPISidebarGroups,
       ],
 
       editLink: {
