@@ -4,35 +4,97 @@ template: splash
 editUrl: false
 lastUpdated: false
 hero:
-  tagline: A deployable self-hosted ingestion pipeline + API enabling semantic search over video
+  title: Kubrick
+  tagline:
+    A deployable self-hosted ingestion pipeline + API enabling semantic search
+    over video
   image:
     file: ../../assets/logo.svg
   actions:
     - text: Case Study
       link: /case-study/intro
-      icon: right-arrow
+      variant: primary
     - text: Documentation
-      link: /docs
-      icon: external
-      variant: minimal
+      link: /guides/get-started
+      variant: secondary
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
+import ContainerSection from "../../components/ContainerSection.astro";
+import LinkedCard from "../../components/LinkedCard.astro";
+import LinkedCardGroup from "../../components/LinkedCardGroup.astro";
+import Sidekick from "../../components/Sidekick.astro";
+
+<div class="px-16 max-w-6xl mx-auto">
+
+<h2 class='font-bold text-2xl md:text-3xl lg:text-4xl bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent'>
+  Search for anything, with anything
+</h2>
+
+Transform your video library into a searchable knowledge base using AI-powered
+semantic understanding. Kubrick enables you to search by concepts, not just
+keywords - find "quarterly goals discussion" even if those exact words were
+never spoken.
+
+<section>
+  <Sidekick
+    title='Semantic Video Search'
+    description='Search by concepts and context, not just keywords. Find moments based on meaning and intent.'
+    image='/demo-placeholder.gif'
+  />
+  <Sidekick
+    title='Beyond text search'
+    description='Retrieve results using image, audio, or video media queries'
+    image='/demo-placeholder.gif'
+    reversed={true}
+  />
+  <Sidekick
+    title='Automated Ingestion Pipeline'
+    description='Upload using the API, or add videos to your S3 bucket through an external integration. The pipeline takes care of the rest.'
+    image='/demo-placeholder.gif'
+  />
+  <Sidekick
+    title='API-First Architecture'
+    description='RESTful endpoints for easy integration with your existing applications and workflows.'
+    image='/demo-placeholder.gif'
+    reversed={true}
+  />
+</section>
+
+## Use Cases
+
+<CardGrid>
+  <Card title='Educational Institutions' icon='open-book'>
+    Search lecture recordings and course materials by topic, concept, or
+    specific discussion points.
+  </Card>
+  <Card title='Corporate Training' icon='rocket'>
+    Find specific topics across training video libraries, onboarding content,
+    and internal presentations.
+  </Card>
+  <Card title='Media & Entertainment' icon='seti:video'>
+    Catalog and search video content archives, interview footage, and
+    documentary materials.
+  </Card>
+  <Card title='Research Organizations' icon='document'>
+    Analyze interview recordings, focus groups, and research documentation
+    efficiently.
+  </Card>
+</CardGrid>
 
 ## Next steps
-<div>
-  <CardGrid stagger>
-    <Card title="Update content" icon="pencil">
-      Edit `src/content/docs/index.mdx` to see this page change.
-    </Card>
-    <Card title="Add new content" icon="add-document">
-      Add Markdown or MDX files to `src/content/docs` to create new pages.
-    </Card>
-    <Card title="Configure your site" icon="setting">
-      Edit your `sidebar` and other config in `astro.config.mjs`.
-    </Card>
-    <Card title="Read the docs" icon="open-book">
-      Learn more in [the Starlight Docs](https://starlight.astro.build/).
-    </Card>
-  </CardGrid>
+
+<LinkedCardGroup>
+  <LinkedCard href='/case-study/intro'>
+    **Case Study** - Learn how we built Kubrick
+  </LinkedCard>
+  <LinkedCard href='/guides/get-started'>
+    **Get Started** - Self-deploy to AWS in minutes
+  </LinkedCard>
+  <LinkedCard href='/api/reference'>
+    **API Reference** - Explore the search and ingestion endpoints
+  </LinkedCard>
+  <LinkedCard href='/demo'>**Demo** - Check out the demo</LinkedCard>
+</LinkedCardGroup>
+
 </div>
