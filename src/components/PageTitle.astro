@@ -6,12 +6,32 @@ const {
     data: { title, template, description, links },
   },
 } = Astro.locals.starlightRoute
+
+// Extract section name from sidebar data by finding which section contains the current page
+function getSectionNameFromSidebar(sidebar: typeof Astro.locals.starlightRoute.sidebar): string {
+  function hasCurrentPage(entries: typeof sidebar): boolean {
+    return entries.some(entry => 
+      entry.type === 'link' ? entry.isCurrent : hasCurrentPage(entry.entries)
+    )
+  }
+
+  for (const entry of sidebar) {
+    if (entry.type === 'group' && hasCurrentPage(entry.entries)) {
+      return entry.label
+    }
+  }
+
+  return 'Docs'
+}
+
+const { sidebar } = Astro.locals.starlightRoute
+const sectionName = getSectionNameFromSidebar(sidebar)
 ---
 
 {
   template === 'doc' && (
     <div class="breadcrumb">
-      <div class="truncate">Docs</div>
+      <div class="truncate">{sectionName}</div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
