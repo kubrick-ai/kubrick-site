@@ -1,5 +1,6 @@
 ---
 import type { StarlightRouteData } from '@astrojs/starlight/route-data'
+import { Icon } from '@astrojs/starlight/components'
 
 interface Props {
   sublist: StarlightRouteData['sidebar']
@@ -7,6 +8,12 @@ interface Props {
 }
 
 const { sublist } = Astro.props
+
+function hasCurrentPage(entries: StarlightRouteData['sidebar']): boolean {
+  return entries.some(entry => 
+    entry.type === 'link' ? entry.isCurrent : hasCurrentPage(entry.entries)
+  )
+}
 ---
 
 {
@@ -23,14 +30,17 @@ const { sublist } = Astro.props
       </a>
     ) : (
       <div class="container-sidebar-entry">
-        <h4 class="entry-title ">
-          <span class="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
-            {entry.label}
-          </span>
-        </h4>
-        <div class="container-group-link">
-          <Astro.self sublist={entry.entries} nested />
-        </div>
+        <details open={hasCurrentPage(entry.entries)}>
+          <summary class="entry-title">
+            <span class="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+              {entry.label}
+            </span>
+            <Icon name="right-caret" class="caret" size="1.25rem" />
+          </summary>
+          <div class="container-group-link">
+            <Astro.self sublist={entry.entries} nested />
+          </div>
+        </details>
       </div>
     ),
   )
@@ -52,9 +62,29 @@ const { sublist } = Astro.props
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     border-radius: calc(var(--radius) - 2px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .entry-title::marker,
+  .entry-title::-webkit-details-marker {
+    display: none;
+  }
+
+  .caret {
+    transition: transform 0.2s ease-in-out;
+    flex-shrink: 0;
+  }
+
+  [open] > .entry-title .caret {
+    transform: rotate(90deg);
   }
 
   .container-group-link {
+    padding-left: 1rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
     gap: 0.125rem;
