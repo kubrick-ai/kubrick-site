@@ -23,7 +23,11 @@ const { sublist } = Astro.props
       </a>
     ) : (
       <div class="container-sidebar-entry">
-        <h4 class="entry-title">{entry.label}</h4>
+        <h4 class="entry-title ">
+          <span class="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+            {entry.label}
+          </span>
+        </h4>
         <div class="container-group-link">
           <Astro.self sublist={entry.entries} nested />
         </div>
@@ -41,7 +45,7 @@ const { sublist } = Astro.props
 
   .entry-title {
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.25rem;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
