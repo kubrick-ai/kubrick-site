@@ -1,7 +1,7 @@
-@layer black {
+@layer theme {
   :root:root {
-    --sl-font: 'Geist Sans', sans-serif;
-    --sl-font-mono: 'Geist Mono', monospace;
+    --sl-font: "Geist Sans", sans-serif;
+    --sl-font-mono: "Geist Mono", monospace;
 
     --radius: 0.5rem;
 
@@ -10,7 +10,7 @@
     --sl-color-banner-text: var(--foreground);
   }
 
-  :root[data-theme='dark'] {
+  :root[data-theme="dark"] {
     --sl-color-banner-bg: oklch(0.28 0.09 268);
     --sl-color-banner-border: oklch(0.38 0.14 266);
 
@@ -36,7 +36,7 @@
     --mark-background: oklch(0.37 0.01 286);
   }
 
-  :root[data-theme='light'] {
+  :root[data-theme="light"] {
     --sl-color-banner-bg: oklch(0.97 0.01 255);
     --sl-color-banner-border: oklch(0.55 0.22 263);
 

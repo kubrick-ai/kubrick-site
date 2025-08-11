@@ -5,7 +5,9 @@ editUrl: false
 lastUpdated: false
 hero:
   title: Kubrick
-  tagline: A deployable self-hosted ingestion pipeline + API enabling semantic search over video
+  tagline:
+    A deployable self-hosted ingestion pipeline + API enabling semantic search
+    over video
   image:
     file: ../../assets/logo.svg
   actions:
@@ -23,99 +25,76 @@ import LinkedCard from "../../components/LinkedCard.astro";
 import LinkedCardGroup from "../../components/LinkedCardGroup.astro";
 import Sidekick from "../../components/Sidekick.astro";
 
-<div class="px-16">
+<div class="px-16 max-w-6xl mx-auto">
 
-  ## Search for anything, with anything
+<h2 class='font-bold text-2xl md:text-3xl lg:text-4xl bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent'>
+  Search for anything, with anything
+</h2>
 
-Transform your video library into a searchable knowledge base using AI-powered semantic understanding.
-Kubrick enables you to search by concepts, not just keywords - find "quarterly goals discussion" 
-even if those exact words were never spoken.
+Transform your video library into a searchable knowledge base using AI-powered
+semantic understanding. Kubrick enables you to search by concepts, not just
+keywords - find "quarterly goals discussion" even if those exact words were
+never spoken.
 
-
-  <section>
-<Sidekick 
-  title="Semantic Video Search" 
-  description="Search by concepts and context, not just keywords. Find moments based on meaning and intent."
-  demoGif="/demo-placeholder.gif"
-/>
-
-<Sidekick 
-  title="AI-Powered Understanding" 
-  description="Leverages TwelveLabs API for advanced video comprehension and content analysis."
-  demoGif="/demo-placeholder.gif"
-  reversed={true}
-/>
-
-<Sidekick 
-  title="Self-Hosted Privacy" 
-  description="Deploy on your own AWS infrastructure. Your data stays under your control."
-  demoGif="/demo-placeholder.gif"
-/>
-
-<Sidekick 
-  title="API-First Architecture" 
-  description="RESTful endpoints for easy integration with your existing applications and workflows."
-  demoGif="/demo-placeholder.gif"
-  reversed={true}
-/>
-
-  </section>
+<section>
+  <Sidekick
+    title='Semantic Video Search'
+    description='Search by concepts and context, not just keywords. Find moments based on meaning and intent.'
+    image='/demo-placeholder.gif'
+  />
+  <Sidekick
+    title='Beyond text search'
+    description='Retrieve results using image, audio, or video media queries'
+    image='/demo-placeholder.gif'
+    reversed={true}
+  />
+  <Sidekick
+    title='Automated Ingestion Pipeline'
+    description='Upload using the API, or add videos to your S3 bucket through an external integration. The pipeline takes care of the rest.'
+    image='/demo-placeholder.gif'
+  />
+  <Sidekick
+    title='API-First Architecture'
+    description='RESTful endpoints for easy integration with your existing applications and workflows.'
+    image='/demo-placeholder.gif'
+    reversed={true}
+  />
+</section>
 
 ## Use Cases
 
 <CardGrid>
-  <Card title="Educational Institutions" icon="graduation">
-    Search lecture recordings and course materials by topic, concept, or specific discussion points.
+  <Card title='Educational Institutions' icon='open-book'>
+    Search lecture recordings and course materials by topic, concept, or
+    specific discussion points.
   </Card>
-  <Card title="Corporate Training" icon="star">
-    Find specific topics across training video libraries, onboarding content, and internal presentations.
+  <Card title='Corporate Training' icon='rocket'>
+    Find specific topics across training video libraries, onboarding content,
+    and internal presentations.
   </Card>
-  <Card title="Media & Entertainment" icon="puzzle">
-    Catalog and search video content archives, interview footage, and documentary materials.
+  <Card title='Media & Entertainment' icon='seti:video'>
+    Catalog and search video content archives, interview footage, and
+    documentary materials.
   </Card>
-  <Card title="Research Organizations" icon="document">
-    Analyze interview recordings, focus groups, and research documentation efficiently.
+  <Card title='Research Organizations' icon='document'>
+    Analyze interview recordings, focus groups, and research documentation
+    efficiently.
   </Card>
 </CardGrid>
 
-## Technical Highlights
-
-Kubrick deploys a complete **serverless architecture on AWS** with enterprise-grade scalability:
-
-- **AWS Lambda** - Serverless compute for video processing and API logic
-- **API Gateway** - REST API endpoints with global edge locations
-- **CloudFront CDN** - Fast global video delivery and caching
-- **S3 + SQS** - Reliable storage and asynchronous processing queues
-- **RDS PostgreSQL** - Managed database with automated backups
-- **Enterprise Security** - IAM roles, Secrets Manager, and VPC isolation
-
-## Quick Start
-
-Get Kubrick running in minutes with our interactive CLI:
-
-```bash
-# Clone and build
-git clone https://github.com/kubrick-ai/kubrick.git
-cd kubrick/cli && npm run build
-kubrick deploy
-```
-
 ## Next steps
 
-  <LinkedCardGroup>
-    <LinkedCard href="/case-study/intro">
-      **Case Study** - Learn how Kubrick works through a detailed example
-    </LinkedCard>
-    <LinkedCard href="/guides/get-started">
-      **Get Started** - Set up your own Kubrick instance
-    </LinkedCard>
-    <LinkedCard href="/api/reference">
-      **API Reference** - Explore the search and ingestion endpoints
-    </LinkedCard>
-    <LinkedCard href="/guides/deployment">
-      **Deployment** - Deploy Kubrick to production
-    </LinkedCard>
-  </LinkedCardGroup>
+<LinkedCardGroup>
+  <LinkedCard href='/case-study/intro'>
+    **Case Study** - Learn how we built Kubrick
+  </LinkedCard>
+  <LinkedCard href='/guides/get-started'>
+    **Get Started** - Self-deploy to AWS in minutes
+  </LinkedCard>
+  <LinkedCard href='/api/reference'>
+    **API Reference** - Explore the search and ingestion endpoints
+  </LinkedCard>
+  <LinkedCard href='/demo'>**Demo** - Check out the demo</LinkedCard>
+</LinkedCardGroup>
 
 </div>
-
