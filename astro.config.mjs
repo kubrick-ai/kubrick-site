@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import { createInlineSvgUrl } from "@astrojs/starlight/expressive-code";
+import starlightOpenAPI, { openAPISidebarGroups } from "starlight-openapi";
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -11,6 +12,11 @@ export default defineConfig({
 
   integrations: [
     starlight({
+      plugins: [
+        starlightOpenAPI([
+          { base: "api", schema: "./src/schemas/api-schema.yaml" },
+        ]),
+      ],
       components: {
         Hero: "./src/components/Hero.astro",
         Header: "./src/components/Header.astro",
@@ -79,6 +85,7 @@ export default defineConfig({
           label: "Reference",
           autogenerate: { directory: "api" },
         },
+        ...openAPISidebarGroups,
       ],
       editLink: {
         baseUrl: "https://github.com/kubrick-ai/kubrick-site/edit/main/docs",
