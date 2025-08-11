@@ -21,33 +21,45 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 import ContainerSection from "../../components/ContainerSection.astro";
 import LinkedCard from "../../components/LinkedCard.astro";
 import LinkedCardGroup from "../../components/LinkedCardGroup.astro";
+import Sidekick from "../../components/Sidekick.astro";
 
-<ContainerSection>
+<div class="px-16">
 
-## The Problem
+  ## Search for anything, with anything
 
-Hours of video content sitting in archives, unsearchable except by filename or manual tagging. Finding specific moments, topics, or discussions across your video library becomes a time-consuming manual process.
+Transform your video library into a searchable knowledge base using AI-powered semantic understanding.
+Kubrick enables you to search by concepts, not just keywords - find "quarterly goals discussion" 
+even if those exact words were never spoken.
 
-## The Solution
 
-Transform any video into a searchable knowledge base using AI-powered semantic understanding. Kubrick enables you to search by concepts, not just keywords - find "quarterly goals discussion" even if those exact words were never spoken.
+  <section>
+<Sidekick 
+  title="Semantic Video Search" 
+  description="Search by concepts and context, not just keywords. Find moments based on meaning and intent."
+  demoGif="/demo-placeholder.gif"
+/>
 
-## Key Features
+<Sidekick 
+  title="AI-Powered Understanding" 
+  description="Leverages TwelveLabs API for advanced video comprehension and content analysis."
+  demoGif="/demo-placeholder.gif"
+  reversed={true}
+/>
 
-<CardGrid>
-  <Card title="Semantic Video Search" icon="magnifier">
-    Search by concepts and context, not just keywords. Find moments based on meaning and intent.
-  </Card>
-  <Card title="AI-Powered Understanding" icon="rocket">
-    Leverages TwelveLabs API for advanced video comprehension and content analysis.
-  </Card>
-  <Card title="Self-Hosted Privacy" icon="lock">
-    Deploy on your own AWS infrastructure. Your data stays under your control.
-  </Card>
-  <Card title="API-First Architecture" icon="laptop">
-    RESTful endpoints for easy integration with your existing applications and workflows.
-  </Card>
-</CardGrid>
+<Sidekick 
+  title="Self-Hosted Privacy" 
+  description="Deploy on your own AWS infrastructure. Your data stays under your control."
+  demoGif="/demo-placeholder.gif"
+/>
+
+<Sidekick 
+  title="API-First Architecture" 
+  description="RESTful endpoints for easy integration with your existing applications and workflows."
+  demoGif="/demo-placeholder.gif"
+  reversed={true}
+/>
+
+  </section>
 
 ## Use Cases
 
@@ -84,15 +96,8 @@ Get Kubrick running in minutes with our interactive CLI:
 ```bash
 # Clone and build
 git clone https://github.com/kubrick-ai/kubrick.git
-cd kubrick && ./build-all-packages.sh
-
-# Deploy with CLI
-cd cli && npm run build
-kubrick deploy  # Interactive deployment wizard
-
-# Start searching your videos
-curl -X POST /api/ingest -F "video=@meeting.mp4"
-curl "/api/search?q=quarterly goals discussion"
+cd kubrick/cli && npm run build
+kubrick deploy
 ```
 
 ## Next steps
@@ -112,4 +117,5 @@ curl "/api/search?q=quarterly goals discussion"
     </LinkedCard>
   </LinkedCardGroup>
 
-</ContainerSection>
+</div>
+
