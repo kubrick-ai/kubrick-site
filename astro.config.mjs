@@ -6,6 +6,8 @@ import starlightOpenAPI, { openAPISidebarGroups } from "starlight-openapi";
 
 import tailwindcss from "@tailwindcss/vite";
 
+console.log(openAPISidebarGroups);
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://kubrick-ai.github.io/kubrick-site",
@@ -33,12 +35,8 @@ export default defineConfig({
           autogenerate: { directory: "case-study" },
         },
         {
-          label: "Guides",
-          autogenerate: { directory: "guides" },
-        },
-        {
           label: "Reference",
-          autogenerate: { directory: "api" },
+          autogenerate: { directory: "ref" },
         },
         ...openAPISidebarGroups,
       ],
@@ -111,7 +109,18 @@ export default defineConfig({
 
       plugins: [
         starlightOpenAPI([
-          { base: "api", schema: "./src/schemas/api-schema.yaml" },
+          {
+            base: "api",
+            schema: "./src/schemas/api-schema.yaml",
+            sidebar: {
+              label: "API",
+              operations: {
+                badges: true,
+                labels: "operationId",
+                sort: "document",
+              },
+            },
+          },
         ]),
       ],
     }),

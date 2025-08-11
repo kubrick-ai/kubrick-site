@@ -1,5 +1,7 @@
 ---
 title: Introduction
+sidebar:
+  order: 1
 ---
 
 Kubrick is an open-source platform that enables developers to generate

@@ -7,13 +7,12 @@ info:
     search, and management. It supports multimodal search queries using text,
     images, audio, or video, as well as generation of video uploads links and embedding task tracking.
 servers:
-  - url: https://example.cloudfront.net/
+  - url: https://example.cloudfront.net
     description: Kubrick API
 
 paths:
   /generate-upload-link:
     get:
-      tags: [v1.0]
       summary: Generate a pre-signed URL to upload a video file
       operationId: generateUploadLink
       parameters:
@@ -68,7 +67,6 @@ paths:
                 $ref: "#/components/schemas/500ErrorResponse"
   /videos:
     get:
-      tags: [v1.0]
       summary: Retrieve a paginated list of videos in the library
       operationId: getVideos
       parameters:
@@ -114,7 +112,6 @@ paths:
                 $ref: "#/components/schemas/500ErrorResponse"
   /tasks:
     get:
-      tags: [v1.0]
       summary: Retrieve a paginated list of processing tasks
       operationId: getTasks
       parameters:
@@ -184,7 +181,6 @@ paths:
                 $ref: "#/components/schemas/500ErrorResponse"
   /search:
     post:
-      tags: [v1.0]
       summary: Search for a video using text or media query
       operationId: searchVideo
       requestBody:

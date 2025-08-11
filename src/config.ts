@@ -4,17 +4,12 @@ export const userConfig: StarlightThemeBlackUserConfig = {
   navLinks: [
     {
       label: "Case Study",
-      link: "/case-study/01_intro",
+      link: "/case-study/intro",
       attrs: {},
     },
     {
-      label: "Get Started",
-      link: "/guides/get-started",
-      attrs: {},
-    },
-    {
-      label: "API",
-      link: "/api",
+      label: "Docs",
+      link: "/ref/quick-start",
       attrs: {},
     },
     {
