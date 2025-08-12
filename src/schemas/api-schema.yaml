@@ -7,7 +7,7 @@ info:
     search, and management. It supports multimodal search queries using text,
     images, audio, or video, as well as generation of video uploads links and embedding task tracking.
 servers:
-  - url: https://example.cloudfront.net
+  - url: https://api.amazonaws.com
     description: Kubrick API
 
 paths:

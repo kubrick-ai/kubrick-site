@@ -1,0 +1,49 @@
+/* fix the styling from generated openAPI documentation */
+
+@layer api {
+  .method {
+    border: none !important;
+    border-radius: var(--radius) !important;
+    padding: 0.2rem 0.5rem !important;
+    background: linear-gradient(20deg, #427bff, #57e5f7);
+  }
+
+  .method-path .path {
+    align-self: center;
+  }
+
+  h2 {
+    background: linear-gradient(to right, #fb923c, #f472b6) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
+  }
+
+  .operation-description-urls {
+    border-radius: var(--radius) !important;
+  }
+
+  .panel {
+    background: var(--background) !important;
+    border-radius: var(--radius) !important;
+    padding: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .panel .expressive-code {
+    width: fit-content;
+  }
+
+  .panel .frame pre {
+    border: none !important;
+    border-radius: var(--radius) !important;
+    background: var(--code-background) !important;
+  }
+
+  starlight-openapi-content-picker select {
+    background-color: var(--background) !important;
+    border: none !important;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+}

@@ -49,7 +49,7 @@
   .container-wrapper {
     margin-left: auto;
     margin-right: auto;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
     width: 100%;
     border-color: color-mix(in oklab, var(--border) 30%, transparent);
     border-right-style: solid;
