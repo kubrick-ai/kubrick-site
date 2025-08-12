@@ -65,6 +65,10 @@ export default defineConfig({
         baseUrl: "https://github.com/kubrick-ai/kubrick-site/edit/main/docs",
       },
 
+      tableOfContents: {
+        maxHeadingLevel: 5,
+      },
+
       expressiveCode: {
         themes: ["github-dark-default", "github-light-default"],
         styleOverrides: {
