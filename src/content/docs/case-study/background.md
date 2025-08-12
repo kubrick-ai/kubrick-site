@@ -38,7 +38,7 @@ into a high-dimensional space such that similar inputs (in terms of meaning or
 context) are placed closer together, while dissimilar ones are pushed further
 apart.
 
-![Vector Embeddings](/vector_embeddings.svg)
+![Vector Embeddings](/vector_embeddings.png)
 
 The resulting vector is called an embedding. These vectors exist in a
 high-dimensional embedding space where proximity reflects semantic similarity.
