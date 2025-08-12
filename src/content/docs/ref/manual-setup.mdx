@@ -1,0 +1,492 @@
+---
+title: Manual Setup
+description: Manual deployment + advanced configuration
+sidebar:
+  order: 2
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
+
+Advanced deployment guide for users who need direct Terraform control, CI/CD integration, or custom infrastructure configurations.
+
+:::note[When to Use Manual Setup]
+Use this guide if you need:
+- Custom Terraform configurations
+- CI/CD pipeline integration
+- Advanced AWS networking setups
+- Direct control over infrastructure state
+- Integration with existing Terraform workflows
+
+For most users, the [Quick Start](/ref/quick-start) CLI guide is recommended.
+:::
+
+## Prerequisites
+
+### Required Software
+
+- **Terraform** (>= 1.0) - [Installation Guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+- **AWS CLI** (>= 2.15.0) - [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- **Python** (>= 3.13) - [Installation Guide](https://www.python.org/downloads/)
+- **uv** - [Installation Guide](https://docs.astral.sh/uv/getting-started/installation/)
+- **Node.js** (>= 24.2.0) & **npm** (>= 11.4.2) - [Installation Guide](https://nodejs.org/)
+
+### AWS Account Requirements
+
+- AWS account with appropriate permissions
+- AWS CLI configured: `aws configure`
+- **TwelveLabs API Key** - [Get your API key](https://docs.twelvelabs.io/docs/api-key)
+
+:::caution[AWS Permissions Required]
+Your AWS user/role needs these permissions:
+- `AmazonS3FullAccess`
+- `AWSLambda_FullAccess`
+- `AmazonAPIGatewayAdministrator`
+- `CloudFrontFullAccess`
+- `AmazonSQSFullAccess`
+- `AmazonRDSFullAccess`
+- `SecretsManagerReadWrite`
+- `IAMFullAccess`
+
+For production deployments, consider custom policies following the principle of least privilege.
+:::
+
+## Project Structure Overview
+
+Understanding the Kubrick project structure will help with customization and troubleshooting:
+
+<FileTree>
+- kubrick/
+  - cli/                    # Command-line interface tool
+    - src/
+    - package.json
+  - lambda/                 # Serverless functions
+    - src/
+      - api_fetch_tasks_handler/
+      - api_fetch_videos_handler/
+      - api_search_handler/
+      - api_video_upload_link_handler/
+      - db_bootstrap/
+      - s3_delete_handler/
+      - sqs_embedding_task_consumer/
+      - sqs_embedding_task_producer/
+      - layers/
+        - config_layer/
+        - embed_service_layer/
+        - response_utils_layer/
+        - s3_utils_layer/
+        - vector_database_layer/
+    - build-package.sh       # Lambda build script
+  - playground/             # Next.js frontend
+    - src/
+    - package.json
+  - terraform/              # Infrastructure as Code
+    - modules/
+      - api_gateway/
+      - cloudfront/
+      - dynamodb/
+      - iam/
+      - lambda/
+      - rds/
+      - s3/
+      - s3_notifications/
+      - secrets_manager/
+      - sqs/
+      - vpc_network/
+    - main.tf
+    - variables.tf
+    - terraform.tfvars.example
+  - build-all-packages.sh   # Build all Lambda packages
+  - README.md
+</FileTree>
+
+## Manual Deployment Process
+
+<Steps>
+
+1. **Clone and Prepare Repository**
+
+   ```bash
+   git clone https://github.com/kubrick-ai/kubrick.git
+   cd kubrick
+   ```
+
+2. **Build Lambda Packages**
+
+   Build all serverless functions and layers:
+
+   ```bash
+   ./lambda/build-package.sh
+   ```
+
+   This script:
+   - Creates Lambda deployment packages for all functions
+   - Builds shared layers with dependencies
+   - Uses `uv pip install` for Python dependency management
+   - Ensures x86_64 Linux compatibility
+
+3. **Initialize Terraform**
+
+   Navigate to the Terraform directory and initialize:
+
+   ```bash
+   cd terraform
+   terraform init
+   ```
+
+4. **Configure Variables**
+
+   Create your `terraform.tfvars` file based on the example:
+
+   ```bash
+   cp terraform.tfvars.example terraform.tfvars
+   ```
+
+   Edit `terraform.tfvars` with your configuration:
+
+   ```hcl
+   # Required variables
+   aws_region = "us-east-1"  # Your AWS region
+   
+   # Database credentials
+   db_username = "postgres"  # Your PostgreSQL username
+   db_password = "your-secure-password"  # Your PostgreSQL password
+   
+   # API keys
+   twelvelabs_api_key = "your-twelvelabs-api-key"  # Your TwelveLabs API key
+   
+   # Optional: Override defaults
+   aws_profile = "default"
+   secret_name = "kubrick_secret"
+   stage_name = "v1_0"
+   ```
+
+   :::tip[Variable Reference]
+   All available variables are defined in `variables.tf`:
+   - `aws_region` - AWS region for deployment (default: us-east-2)
+   - `secret_name` - Secrets Manager secret name (default: kubrick_secret)
+   - `db_username` - PostgreSQL username (required)
+   - `db_password` - PostgreSQL password (required, sensitive)
+   - `twelvelabs_api_key` - TwelveLabs API key (required, sensitive)
+   - `aws_profile` - AWS CLI profile (default: default)
+   - `stage_name` - API Gateway stage (default: v1_0)
+   :::
+
+5. **Review Deployment Plan**
+
+   Generate and review the execution plan:
+
+   ```bash
+   terraform plan
+   ```
+
+   This shows all resources that will be created, modified, or destroyed.
+
+6. **Deploy Infrastructure**
+
+   Apply the Terraform configuration:
+
+   ```bash
+   terraform apply
+   ```
+
+   Type `yes` when prompted. Deployment takes 10-15 minutes.
+
+</Steps>
+
+## Working with Existing AWS Resources
+
+### Importing Existing Secrets
+
+If you already have a secret named `kubrick_secret` in AWS Secrets Manager:
+
+<Steps>
+
+1. **Verify Secret Contents**
+
+   Check your existing secret contains required keys:
+
+   ```bash
+   aws secretsmanager get-secret-value \
+     --secret-id kubrick_secret \
+     --query SecretString --output text
+   ```
+
+   Required keys:
+   - `DB_USERNAME`
+   - `DB_PASSWORD` 
+   - `TWELVELABS_API_KEY`
+
+2. **Update Secret if Needed**
+
+   If keys are missing or have different names:
+
+   ```bash
+   aws secretsmanager update-secret \
+     --secret-id kubrick_secret \
+     --secret-string '{
+       "DB_USERNAME": "postgres",
+       "DB_PASSWORD": "your-password", 
+       "TWELVELABS_API_KEY": "your-api-key"
+     }'
+   ```
+
+3. **Import Existing Secret**
+
+   Import the secret into Terraform state:
+
+   ```bash
+   terraform import module.secrets_manager.aws_secretsmanager_secret.kubrick_secret kubrick_secret
+   ```
+
+4. **Verify Import**
+
+   ```bash
+   terraform plan  # Should show no changes if properly configured
+   ```
+
+</Steps>
+
+### Handling Resource Conflicts
+
+:::warning[Common Import Issues]
+- **ResourceExistsException**: Follow the secret import steps above
+- **VPC/Subnet conflicts**: Ensure your AWS account doesn't have conflicting default VPC settings
+- **IAM role conflicts**: Check for existing roles with similar names
+:::
+
+## Terraform Architecture Overview
+
+### Core Modules
+
+- **`api_gateway`** - REST API endpoints for video operations
+- **`cloudfront`** - CDN for global content delivery  
+- **`dynamodb`** - Embedding cache for performance optimization
+- **`iam`** - Roles and policies for service permissions
+- **`lambda`** - Serverless functions and layers
+- **`rds`** - PostgreSQL database for metadata
+- **`s3`** - Storage buckets for videos and static assets
+- **`s3_notifications`** - Event triggers for video processing
+- **`secrets_manager`** - Secure credential storage
+- **`sqs`** - Message queues for async processing
+- **`vpc_network`** - Network infrastructure and security
+
+### Lambda Functions Deployed
+
+- **API Handlers**:
+  - `api_fetch_tasks_handler` - Task status and management
+  - `api_fetch_videos_handler` - Video listing and metadata
+  - `api_search_handler` - Semantic search with embeddings
+  - `api_video_upload_link_handler` - Presigned upload URLs
+
+- **Processing Functions**:
+  - `db_bootstrap` - Database initialization
+  - `s3_delete_handler` - Cleanup on video deletion
+  - `sqs_embedding_task_consumer` - Process embedding jobs
+  - `sqs_embedding_task_producer` - Create embedding jobs
+
+- **Shared Layers**:
+  - `config_layer` - Common configuration utilities
+  - `embed_service_layer` - TwelveLabs API integration
+  - `response_utils_layer` - HTTP response formatting
+  - `s3_utils_layer` - S3 operation utilities
+  - `vector_database_layer` - Vector similarity operations
+
+## Verification and Testing
+
+After deployment completes:
+
+<Steps>
+
+1. **Check Terraform Output**
+
+   Review important outputs:
+
+   ```bash
+   terraform output
+   ```
+
+   Key outputs include:
+   - CloudFront distribution URL
+   - API Gateway endpoint
+   - S3 bucket names
+   - RDS endpoint
+
+2. **Verify AWS Resources**
+
+   Check resource creation:
+
+   ```bash
+   # Lambda functions
+   aws lambda list-functions --query 'Functions[?contains(FunctionName, `kubrick`)]'
+   
+   # API Gateway
+   aws apigateway get-rest-apis --query 'items[?contains(name, `kubrick`)]'
+   
+   # S3 buckets
+   aws s3 ls | grep kubrick
+   ```
+
+3. **Test the Playground**
+
+   Access the CloudFront URL from the Terraform output to test the web interface.
+
+4. **API Health Check**
+
+   Test API endpoints:
+
+   ```bash
+   curl https://your-api-gateway-url/v1_0/videos
+   ```
+
+</Steps>
+
+## Customization Options
+
+### Custom AWS Region
+
+Update `aws_region` in your `terraform.tfvars`:
+
+```hcl
+aws_region = "eu-west-1"  # Europe (Ireland)
+```
+
+### Custom Database Configuration
+
+Modify database settings in `terraform.tfvars`:
+
+```hcl
+db_username = "kubrick_admin"
+db_password = "your-complex-password-here"
+```
+
+### API Gateway Stage Names
+
+Change the API version/stage:
+
+```hcl
+stage_name = "production"  # Creates /production/ endpoints
+```
+
+## Troubleshooting
+
+### Common Issues
+
+:::note[Deployment Failures]
+- **Build script errors**: Ensure Python 3.13 and `uv` are installed
+- **Terraform init fails**: Check AWS credentials and region
+- **Lambda package too large**: Verify dependencies in `pyproject.toml` files
+- **RDS timeout**: Increase default timeout or check VPC configuration
+:::
+
+### Debug Commands
+
+```bash
+# Check AWS credentials
+aws sts get-caller-identity
+
+# Verify Terraform state
+terraform show
+
+# Lambda function logs
+aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/kubrick"
+
+# API Gateway logs
+aws logs describe-log-groups --log-group-name-prefix "API-Gateway-Execution-Logs"
+```
+
+### State Management
+
+```bash
+# Backup state
+terraform state pull > kubrick.tfstate.backup
+
+# List resources in state
+terraform state list
+
+# Remove problematic resource
+terraform state rm aws_s3_bucket.example
+```
+
+## Cleanup and Management
+
+### Destroying Infrastructure
+
+:::danger[Data Loss Warning]
+This will permanently delete all data including uploaded videos and database contents.
+:::
+
+```bash
+terraform destroy
+```
+
+### Selective Resource Management
+
+Remove specific resources:
+
+```bash
+# Remove CloudFront (takes 15+ minutes)
+terraform destroy -target=module.cloudfront
+
+# Remove RDS (with final snapshot)
+terraform destroy -target=module.rds
+```
+
+### Cost Optimization
+
+Monitor AWS costs and consider:
+- RDS instance sizing
+- CloudFront usage patterns
+- Lambda memory allocation
+- S3 storage classes for video archives
+
+## Advanced Configuration
+
+### CI/CD Integration
+
+Example GitHub Actions workflow:
+
+```yaml
+name: Deploy Kubrick
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Build Lambda packages
+        run: ./lambda/build-package.sh
+      - name: Terraform Deploy
+        run: |
+          cd terraform
+          terraform init
+          terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_twelvelabs_api_key: ${{ secrets.TWELVELABS_API_KEY }}
+```
+
+### Multi-Environment Setup
+
+Create separate `.tfvars` files for each environment:
+
+```bash
+# Development
+terraform apply -var-file="dev.tfvars"
+
+# Production  
+terraform apply -var-file="prod.tfvars"
+```
+
+## Next Steps
+
+- **API Integration**: Explore the [API Reference](/api/reference)
+- **Architecture Details**: Read the [Case Study](/case-study/intro)
+- **CLI Tool**: Try the [Quick Start](/ref/quick-start) for simpler deployments

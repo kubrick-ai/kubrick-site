@@ -6,8 +6,6 @@ import starlightOpenAPI, { openAPISidebarGroups } from "starlight-openapi";
 
 import tailwindcss from "@tailwindcss/vite";
 
-console.log(openAPISidebarGroups);
-
 // https://astro.build/config
 export default defineConfig({
   site: "https://kubrick-ai.github.io/kubrick-site",

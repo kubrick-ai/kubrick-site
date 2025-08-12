@@ -1,0 +1,163 @@
+---
+title: Quick Start
+description: Get started with the Kubrick CLI
+sidebar:
+  order: 1
+---
+
+import { Steps } from "@astrojs/starlight/components";
+import { Aside } from "@astrojs/starlight/components";
+
+Get Kubrick deployed to AWS in minutes using our interactive CLI tool. The CLI
+handles all the complex Terraform operations and guides you through the setup
+process.
+
+:::tip
+
+The Kubrick CLI is the recommended way to deploy. For advanced users who need
+direct Terraform control, see the [Manual Setup](/ref/manual-setup) guide.
+
+:::
+
+## Prerequisites
+
+Before starting, ensure you have the following installed and configured:
+
+### Required Software
+
+- **Terraform** (>= 1.0) -
+  [Installation Guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+- **AWS CLI** (>= 2.15.0) -
+  [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- **Python** (>= 3.13) - [Installation Guide](https://www.python.org/downloads/)
+- **uv** -
+  [Installation Guide](https://docs.astral.sh/uv/getting-started/installation/)
+- **Node.js** (>= 24.2.0) & **npm** (>= 11.4.2) -
+  [Installation Guide](https://nodejs.org/)
+
+### AWS Account Setup
+
+- AWS account with appropriate permissions
+- AWS CLI configured with your credentials: `aws configure`
+- **TwelveLabs API Key** -
+  [Get your API key](https://docs.twelvelabs.io/v1.3/docs/advanced/organizations/users-guide#create-api-keys)
+
+:::note[Required AWS Permissions]
+
+Your AWS user/role needs these permissions:
+
+- `AmazonS3FullAccess`
+- `AWSLambdaFullAccess`
+- `AmazonAPIGatewayAdministrator`
+- `CloudFrontFullAccess`
+- `AmazonSQSFullAccess`
+- `AmazonRDSFullAccess`
+- `SecretsManagerReadWrite`
+- `IAMFullAccess`
+
+:::
+
+## Installation and Deployment
+
+<Steps>
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/kubrick-ai/kubrick.git
+   cd kubrick
+   ```
+
+2. **Build and Install the CLI**
+
+   ```bash
+   cd cli
+   npm run build
+   ```
+
+   The CLI is now installed globally and available as `kubrick` within the root
+   folder (You may need to restart your shell).
+
+3. **Deploy Infrastructure**
+
+   Run the interactive deployment:
+
+   ```bash
+   kubrick deploy
+   ```
+
+   The CLI will guide you through:
+   - Building Lambda packages
+   - AWS Profile and region selection
+   - Database credentials setup
+   - TwelveLabs API key configuration
+   - Terraform deployment process
+
+   Run `kubrick --help` for command options
+
+4. **Wait for Deployment**
+
+   Deployment typically takes 10-15 minutes. The CLI will show progress and any
+   issues encountered.
+
+</Steps>
+
+## Testing Your Deployment
+
+Once deployment completes successfully:
+
+<Steps>
+
+1. **Access the Playground**
+
+   The CLI will provide you with the CloudFront URL for your deployed playground
+   interface.
+
+2. **Upload a Test Video**
+
+   Use the playground interface to upload a video file and verify the ingestion
+   pipeline works.
+
+3. **Perform a Search**
+
+   Try searching for content in your uploaded video using natural language
+   queries.
+
+</Steps>
+
+:::tip[Playground Interface]
+
+The playground provides a web interface to test video uploads and search
+functionality. Use it to validate your deployment or as an example for API
+integration.
+
+:::
+
+## What Gets Deployed
+
+Your Kubrick deployment includes:
+
+- **API Gateway** - RESTful API for video upload and search
+- **AWS Lambda Functions** - Video processing and API endpoints
+- **CloudFront Distribution** - Global content delivery for the playground
+- **S3 Buckets** - Video storage and static assets
+- **RDS PostgreSQL** - Database for video metadata, embeddings tasks, and vector
+  embeddings (with `pgvector`).
+- **SQS Queue** - Asynchronous processing pipeline
+- **Secrets Manager** - Secure credential storage
+
+## Next Steps
+
+- **Explore the API**: Check out the [API Reference](/api/reference) for
+  integration details
+- **Advanced Configuration**: Learn about [Manual Setup](/ref/manual-setup) for
+  custom deployments
+- **Architecture Deep Dive**: Read our [Case Study](/case-study/intro) to
+  understand how Kubrick works
+
+## Need Help?
+
+- **Deployment Issues**: See the [Manual Setup](/ref/manual-setup)
+  troubleshooting section
+- **AWS Permissions**: Verify your AWS CLI configuration with
+  `aws sts get-caller-identity`
