@@ -1,9 +1,12 @@
 ---
 import '@astrojs/starlight/style/markdown.css'
+import ImageZoom from 'starlight-image-zoom/components/ImageZoom.astro'
 ---
 
 <div class="markdown-wrapper">
   <div class="sl-markdown-content">
-    <slot />
+      <slot />
   </div>
 </div>
+
+<ImageZoom />
