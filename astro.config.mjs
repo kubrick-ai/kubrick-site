@@ -61,7 +61,7 @@ export default defineConfig({
       ],
 
       editLink: {
-        baseUrl: "https://github.com/kubrick-ai/kubrick-site/edit/main/docs",
+        baseUrl: "https://github.com/kubrick-ai/kubrick-site/edit/main",
       },
 
       tableOfContents: {
