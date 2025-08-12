@@ -38,7 +38,7 @@ into a high-dimensional space such that similar inputs (in terms of meaning or
 context) are placed closer together, while dissimilar ones are pushed further
 apart.
 
-![Vector Embeddings](/vector_embeddings.png)
+![Vector Embeddings](@assets/vector_embeddings.png)
 
 The resulting vector is called an embedding. These vectors exist in a
 high-dimensional embedding space where proximity reflects semantic similarity.
@@ -65,7 +65,7 @@ understanding more closely with human perception.
 
 #### LLMs and AI Applications
 
-![full architecture](/full_architecture.svg)
+![full architecture](@assets/full_architecture.svg)
 
 Over the last few years, artificial intelligence has transformed the world of
 software development. Large language models (LLMs) like OpenAI's ChatGPT or
