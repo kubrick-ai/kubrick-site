@@ -8,7 +8,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://kubrick-ai.github.io/kubrick-site",
+  // site: "https://kubrick-ai.github.io/kubrick-site",
+  site: "https://kubrick-ai.github.io/",
+  base: "/kubrick-site",
 
   integrations: [
     starlight({
