@@ -46,23 +46,18 @@
     line-height: inherit;
   }
 
-  h1 {
-    background: linear-gradient(
-      30deg,
-      #fb923c 0%,
-      #f472b6 40%,
-      #8295ff 100%
-    ) !important;
-    background-clip: text !important;
-    -webkit-background-clip: text !important;
-    color: transparent !important;
+  h1:has(+ div.markdown-wrapper) {
+    background: linear-gradient(30deg, #fb923c 0%, #f472b6 40%, #8295ff 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
-  h2 {
-    background: linear-gradient(30deg, #fb923c, #f472b6) !important;
-    background-clip: text !important;
-    -webkit-background-clip: text !important;
-    color: transparent !important;
+  .sl-markdown-content h2 {
+    background: linear-gradient(30deg, #fb923c, #f472b6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
   .container-wrapper {
