@@ -39,23 +39,18 @@ Before starting, ensure you have the following installed and configured:
 
 - AWS account with appropriate permissions
 - AWS CLI configured with your credentials: `aws configure`
-- **TwelveLabs API Key** -
-  [Get your API key](https://docs.twelvelabs.io/v1.3/docs/advanced/organizations/users-guide#create-api-keys)
 
-:::note[Required AWS Permissions]
+<details>
+  <summary>Your AWS user/role needs these permissions:</summary>
+  `AmazonS3FullAccess`, `AWSLambdaFullAccess`, `AmazonAPIGatewayAdministrator`,
+  `CloudFrontFullAccess`, `AmazonSQSFullAccess`, `AmazonRDSFullAccess`
+  ,`SecretsManagerReadWrite`, `IAMFullAccess`
+</details>
 
-Your AWS user/role needs these permissions:
+### TwelveLabs API Key
 
-- `AmazonS3FullAccess`
-- `AWSLambdaFullAccess`
-- `AmazonAPIGatewayAdministrator`
-- `CloudFrontFullAccess`
-- `AmazonSQSFullAccess`
-- `AmazonRDSFullAccess`
-- `SecretsManagerReadWrite`
-- `IAMFullAccess`
-
-:::
+- You will need a TwelveLabs API key. If you don't have one, you can get one
+  [here](https://docs.twelvelabs.io/v1.3/docs/advanced/organizations/users-guide#create-api-keys)
 
 ## Installation and Deployment
 

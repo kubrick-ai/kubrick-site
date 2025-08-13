@@ -3,7 +3,7 @@
 @layer api {
   .entry-badge {
     color: var(--primary) !important;
-    background: linear-gradient(20deg, #ffce96, #ffadd9);
+    background: var(--gradient-api-badge);
   }
 
   .method {
@@ -13,7 +13,7 @@
     letter-spacing: 0.75px;
     color: var(--primary) !important;
     font-weight: 500 !important;
-    background: linear-gradient(20deg, #ffce96, #ffadd9);
+    background: var(--gradient-api-badge);
   }
 
   .method-path .path {

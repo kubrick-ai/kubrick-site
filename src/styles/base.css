@@ -47,14 +47,14 @@
   }
 
   h1:has(+ div.markdown-wrapper) {
-    background: linear-gradient(30deg, #fb923c 0%, #f472b6 40%, #8295ff 100%);
+    background: var(--gradient-heading-primary);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
   }
 
   .sl-markdown-content h2 {
-    background: linear-gradient(30deg, #fb923c, #f472b6);
+    background: var(--gradient-heading-secondary);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -399,26 +399,24 @@
   }
 
   .starlight-aside {
+    /* padding: 24px; */
     border-radius: var(--radius);
-    box-shadow:
-      0 2px 10px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.05));
+    box-shadow: 0 2px 10px 2px rgba(0, 0, 0, 0.1);
   }
 
   .starlight-aside--tip {
-    background: linear-gradient(20deg, #d1f1ff, #fbd1ff);
+    background: var(--gradient-aside-tip);
   }
 
   .starlight-aside--note {
-    background: linear-gradient(20deg, #e0d1ff, #c7dcff);
+    background: var(--gradient-aside-note);
   }
 
   .starlight-aside--caution {
-    background: linear-gradient(20deg, #ffcccc, #fff8d1);
+    background: var(--gradient-aside-caution);
   }
 
   .starlight-aside--danger {
-    background: linear-gradient(20deg, #ffd1f2, #ffb8b8);
+    background: var(--gradient-aside-danger);
   }
 }
