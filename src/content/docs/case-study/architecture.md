@@ -4,12 +4,47 @@ sidebar:
   order: 5
 ---
 
-## Level 2 heading
+## 5.2 Search and retrieval
 
-Case Study placeholder document
+### 5.2a Search Handler
 
-### Level 3 heading
+Kubrick supports multiple query modalities:
 
-#### Level 4 heading
+| Query Type | Input Method          | Limitations   |
+| ---------- | --------------------- | ------------- |
+| Text       | Inline string in JSON | None          |
+| Image      | File upload or URL    | Upload ≤ 6 MB |
+| Video      | File upload or URL    | Upload ≤ 6 MB |
+| Audio      | File upload           | Upload ≤ 6 MB |
 
-##### Level 5 heading
+Search requests are sent via a call to the search API endpoint. If files are
+uploaded directly (multipart/form-data), they are processed in-memory within the
+Search Handler Lambda, avoiding the need for temporary S3 storage. Larger files
+are supported via URLs.
+
+The **Search Handler Lambda** validates the request into a `search_request`
+object containing query type, filters, and similarity thresholds. From there the
+functions performs three actions:
+
+1. It generates an embedding by sending the query to the embedding model.
+2. It performs a vector similarity search against stored embeddings in **RDS,
+   a**pplying filters such as modality and minimum similarity score.
+3. It generates pre-signed URLs for each of the matching videos.
+
+The resulting video metadata and pre-signed URLs are assembled into a structured
+JSON response and sent to the client.
+
+### 5.2b Cache
+
+To reduce redundant embedding model API calls, the Search Lambda uses a
+**r**ead-through cache backed by Amazon DynamoDB. DynamoDB was chosen for its
+single-digit millisecond latency, flexible pricing, and fully managed nature,
+avoiding the operational overhead of Redis or Memcached. Search parameters are
+hashed into a cache key; on a miss, the Lambda fetches embeddings from the
+model, stores the result in DynamoDB, and returns it to the client. While this
+approach is not as fast as write-behind caching, it keeps the cache loosely
+coupled and easy to disable. Given that embedding requests for large media can
+have 10+ second round-trip-times, this cache can dramatically improve
+performance for high-hit-rate scenarios such as content recommendation.
+
+## 5.3 Additional architecture features

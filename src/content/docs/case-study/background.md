@@ -96,14 +96,16 @@ and often include advanced material beyond the student's current understanding.
 
 #### RAG and Context Engineering
 
-Retrieval-Augmented Generation (RAG) is an approach for enhancing LLM responses
-by dynamically supplying them with only the most relevant external information
-at the time of the query. RAG systems "retrieve" context from a curated
-knowledge source and "augment" the model's prompt with that information. This
-ensures the LLM is both informed and efficient, producing accurate outputs
-grounded in the latest or domain-specific data.
+![model comparison](@assets/embedding_model_comparison.png) Retrieval-Augmented
+Generation (RAG) is an approach for enhancing LLM responses by dynamically
+supplying them with only the most relevant external information at the time of
+the query. RAG systems "retrieve" context from a curated knowledge source and
+"augment" the model's prompt with that information. This ensures the LLM is both
+informed and efficient, producing accurate outputs grounded in the latest or
+domain-specific data.
 
-A typical RAG pipeline works in three stages:
+![model comparison](@assets/embedding_model_comparison-bold.png) A typical RAG
+pipeline works in three stages:
 
 1. **Data Embedding** – Source material (such as documents, transcripts, or
    images) is transformed into vector embeddings using an embedding model. These
