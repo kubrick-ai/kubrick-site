@@ -41,6 +41,10 @@ export default defineConfig({
           label: "API",
           items: [
             {
+              label: "Overview",
+              link: "/api/",
+            },
+            {
               label: "Generate Upload Link",
               link: "/api/operations/generateuploadlink/",
               badge: "GET",
