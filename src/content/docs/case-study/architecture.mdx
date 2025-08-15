@@ -4,7 +4,10 @@ sidebar:
   order: 5
 ---
 
-import ThemedDiagram from "@components/ThemedDiagram.astro";
+import { Image } from "astro:assets";
+import { Zoom } from "starlight-image-zoom/components";
+import lightArchitecture from "@assets/diagrams/light/simplified_architecture.png";
+import darkArchitecture from "@assets/diagrams/dark/simplified_architecture.png";
 
 ## 5.2 Search and retrieval
 
@@ -36,9 +39,17 @@ functions performs three actions:
 The resulting video metadata and pre-signed URLs are assembled into a structured
 JSON response and sent to the client.
 
-<ThemedDiagram
-  src='simplified_architecture.png'
+<Image
+  src={lightArchitecture}
   alt='Simplified Architecture Diagram'
+  class='dark:sl-hidden'
+  loading='lazy'
+/>
+<Image
+  src={darkArchitecture}
+  alt='Simplified Architecture Diagram'
+  class='light:sl-hidden'
+  loading='lazy'
 />
 
 ### 5.2b Cache
