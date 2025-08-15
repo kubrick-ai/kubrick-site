@@ -419,4 +419,13 @@
   .starlight-aside--danger {
     background: var(--gradient-aside-danger);
   }
+
+  starlight-image-zoom-zoomable img {
+    background: var(--gradient-diagram-bg);
+    border-radius: var(--radius);
+  }
+
+  .starlight-image-zoom-dialog img {
+    background: var(--gradient-diagram-bg);
+  }
 }

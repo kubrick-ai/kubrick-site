@@ -1,0 +1,32 @@
+---
+import { Zoom } from 'starlight-image-zoom/components'
+import { Image } from 'astro:assets';
+
+export interface Props {
+  src: string;  // just the filename, like "simplified_architecture.png"
+  alt: string;
+}
+
+const { src, alt} = Astro.props;
+
+// Use dynamic imports for proper asset processing
+const lightImage = await import(`../assets/diagrams/light/${src}`);
+const darkImage = await import(`../assets/diagrams/dark/${src}`);
+---
+
+<Zoom label={alt}>
+  <Image
+    src={lightImage.default}
+    alt={alt}
+    class="dark:sl-hidden"
+    loading="lazy"
+  />
+</Zoom>
+<Zoom label={alt}>
+  <Image
+    src={darkImage.default}
+    alt={alt}
+    class="light:sl-hidden"
+    loading="lazy"
+  />
+</Zoom>

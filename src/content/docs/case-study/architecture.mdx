@@ -4,6 +4,8 @@ sidebar:
   order: 5
 ---
 
+import ThemedDiagram from "@components/ThemedDiagram.astro";
+
 ## 5.2 Search and retrieval
 
 ### 5.2a Search Handler
@@ -33,6 +35,11 @@ functions performs three actions:
 
 The resulting video metadata and pre-signed URLs are assembled into a structured
 JSON response and sent to the client.
+
+<ThemedDiagram
+  src='simplified_architecture.png'
+  alt='Simplified Architecture Diagram'
+/>
 
 ### 5.2b Cache
 
