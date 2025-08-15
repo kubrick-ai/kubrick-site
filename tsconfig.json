@@ -4,6 +4,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
+      "@components/*": ["src/components/*"],
       "@assets/*": ["src/assets/*"]
     }
   },
