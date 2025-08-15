@@ -25,9 +25,16 @@ if (!lightImage || !darkImage) {
 }
 ---
 
-<Zoom label={alt}>
-  <Image src={lightImage} alt={alt} class="dark:sl-hidden" loading="lazy" />
-</Zoom>
-<Zoom label={alt}>
-  <Image src={darkImage} alt={alt} class="light:sl-hidden" loading="lazy" />
-</Zoom>
+<div class="themed-diagram">
+  <div class="dark:sl-hidden" >
+    <Zoom label={alt} >
+      <Image src={lightImage} alt={alt} loading="lazy" />
+    </Zoom>
+  </div>
+
+  <div class="light:sl-hidden" >
+    <Zoom label={alt}>
+      <Image src={darkImage} alt={alt} loading="lazy" />
+    </Zoom>
+  </div>
+</div>
