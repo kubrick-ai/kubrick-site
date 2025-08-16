@@ -195,7 +195,7 @@
   .sl-markdown-content h2:not(:where(.not-content *)) {
     letter-spacing: -0.025em;
     font-weight: 600;
-    font-size: 1.875rem;
+    font-size: 1.6rem;
     line-height: 2.25rem;
     padding-bottom: 0.5rem;
     border-bottom-width: 1px;
