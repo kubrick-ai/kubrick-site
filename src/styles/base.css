@@ -53,21 +53,7 @@
     color: transparent;
   }
 
-  .sl-markdown-content h2 {
-    background: var(--gradient-heading-secondary);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-  }
-
-  .sl-markdown-content h3 {
-    background: var(--gradient-heading-secondary);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-  }
-
-  .sl-markdown-content h4 {
+  .sl-markdown-content h2, h3, h4, h5 {
     background: var(--gradient-heading-secondary);
     background-clip: text;
     -webkit-background-clip: text;

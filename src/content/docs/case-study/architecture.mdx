@@ -6,7 +6,7 @@ sidebar:
 
 import ThemedDiagram from "@components/ThemedDiagram.astro";
 
-## 5.1 Ingestion pipeline
+## Ingestion pipeline
 
 The ingestion pipeline is responsible for taking a video input from the user and
 turning it into a set of searchable embeddings stored alongside metadata in the
@@ -14,11 +14,11 @@ database. It does this through an event-driven architecture that decouples video
 upload, embedding generation, and database persistence. The following steps walk
 through this process in detail.
 
-### 5.1.1 Video Upload
+### Video Upload
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-#### Step 1\. User → Storage
+##### Step 1\. User → Storage
 
 The ingestion process begins when a user uploads a video to a private Amazon S3
 bucket. This can be done through two main paths:
@@ -35,16 +35,16 @@ bucket. This can be done through two main paths:
   the AWS Console or other S3 compatible integrations. External access to items
   in the bucket is always managed by generating temporary presigned URLs.
 
-#### Step 2\. Storage → Embedding Task Producer
+##### Step 2\. Storage → Embedding Task Producer
 
 Once the video is in S3, the bucket emits an event that triggers the Embedding
 Task Producer Lambda.
 
-### 5.1.2 Embedding Generation
+### Embedding Generation
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-#### Step 3\. Embedding Task Producer ⭤ Embedding Model
+##### Step 3\. Embedding Task Producer ⭤ Embedding Model
 
 The Producer Lambda performs initial validation to ensure the uploaded video
 meets the embedding model’s processing requirements. It then generates a
@@ -57,13 +57,13 @@ ID that will be used for future status checks.
 Structured error handling ensures that any ingestion failures are logged both in
 application logs and in the `tasks` database table.
 
-#### Step 4\. Embedding Task Producer → SQS
+##### Step 4\. Embedding Task Producer → SQS
 
 To continue processing asynchronously, the Lambda publishes a message to an SQS
 queue. This message contains the job ID required for later status checks and the
 final embedding retrieval.
 
-#### Step 5\. Embedding Task Producer → Database
+##### Step 5\. Embedding Task Producer → Database
 
 The Lambda also records a new “embedding task” in the database with its initial
 state set to `processing`. This allows the user to track embedding progress and
@@ -71,18 +71,18 @@ handle errors. Since generating an embedding is an asynchronous process handled
 by an external service, we track the status of each job in the database until
 completion or failure.
 
-### 5.1.3 Database Persistence
+### Database Persistence
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-#### Step 6\. SQS ⭤ Embedding Task Consumer
+##### Step 6\. SQS ⭤ Embedding Task Consumer
 
 When a message is placed in the queue, SQS triggers the Embedding Task Consumer
 Lambda, which begins polling the embedding model for the job’s status. If the
 job is still processing, the message will be re-queued with a short visibility
 timeout so the Consumer Lambda can check again later.
 
-#### Step 7\. Embedding Task Consumer ⭤ Embedding Model
+##### Step 7\. Embedding Task Consumer ⭤ Embedding Model
 
 The Lambda checks the job status:
 
@@ -92,35 +92,35 @@ The Lambda checks the job status:
 - If the status is **Ready**, the embeddings and metadata are retrieved from the
   model.
 
-#### Step 8\. Embedding Task Consumer → Database
+##### Step 8\. Embedding Task Consumer → Database
 
 When embeddings are ready, the Lambda stores them alongside the video’s metadata
 in the database. The embedding task record is then updated to `completed`,
 making the video immediately available for semantic search queries.
 
-## 5.2 Search and Retrieval
+## Search and Retrieval
 
 The search and retrieval pipeline is responsible for taking a user’s query,
 whether text, image, audio, or video, and retrieving a set of relevant video
 segments. The following steps describe this process in detail.
 
-### 5.2.1 Processing the Query
+### Processing the Query
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-#### Step 1\. User ⭤ API Gateway
+##### Step 1\. User ⭤ API Gateway
 
 The search process begins when the user sends a request to the `/search`
 endpoint. The Kubrick Search API supports multiple query types:
 
 | Query Type | Input Method       | Limitations   |
 | ---------- | ------------------ | ------------- |
-| Text       | String             | 77 tokens\*   |
+| Text       | String             | 77 tokens [^1]|
 | Image      | File upload or URL | Upload ≤ 6 MB |
 | Video      | File upload or URL | Upload ≤ 6 MB |
 | Audio      | File upload        | Upload ≤ 6 MB |
 
-_\*Limitation of Marengo 2.7_
+[^1]: Limitation of Marengo 2.7
 
 Requests are sent via a `multipart/form-data` POST request. If files are
 uploaded directly, they are processed in-memory by the Search Handler Lambda,
@@ -129,16 +129,16 @@ avoiding temporary S3 storage. Larger files can be sent via URL.
 Read more about the `/search` endpoint in our \[API
 documentation\](/api/operations/search)
 
-#### Step 2\. API Gateway ⭤ Search Handler Lambda
+##### Step 2\. API Gateway ⭤ Search Handler Lambda
 
 Once the request reaches the Search Handler Lambda, it is validated and parsed
 into an object containing query type, filters, and similarity thresholds
 
-### 5.2.2 Retrieving Results
+### Retrieving Results
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-#### Step 3\. Search Handler Lambda ⭤ Embedding Model/Cache
+##### Step 3\. Search Handler Lambda ⭤ Embedding Model/Cache
 
 Before embedding the query, the Lambda checks the cache to avoid redundant
 embedding model calls:
@@ -151,7 +151,7 @@ embedding model calls:
   waits for the embedding vectors to be returned. The new embeddings are then
   stored in DynamoDB.
 
-#### Step 4\. Search Handler Lambda ⭤ Database
+##### Step 4\. Search Handler Lambda ⭤ Database
 
 The Lambda performs a semantic search using Approximate Nearest Neighbor (ANN)
 search with cosine similarity against stored embeddings in RDS. Filters such as
@@ -162,7 +162,7 @@ For each match, a presigned URL gets generated to allow secure, temporary access
 to the video. These URLs, along with the corresponding metadata, are assembled
 into a structured JSON response and returned to the client.
 
-## 5.3 Review \- Full Architecture
+## Review \- Full Architecture
 
 With the ingestion and search pipelines detailed above, the full architecture
 brings together all components into a cohesive workflow. The following diagram
