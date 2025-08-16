@@ -14,7 +14,7 @@ database. It does this through an event-driven architecture that decouples video
 upload, embedding generation, and database persistence. The following steps walk
 through this process in detail.
 
-### Video Upload
+### 5.1.1 Video Upload
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
@@ -35,16 +35,12 @@ bucket. This can be done through two main paths:
   the AWS Console or other S3 compatible integrations. External access to items
   in the bucket is always managed by generating temporary presigned URLs.
 
-<<<<<<< HEAD
-<ThemedDiagram src="simplified_architecture.png" alt="Simplified Architecture Diagram" />
-=======
 #### Step 2\. Storage → Embedding Task Producer
->>>>>>> 26bb2b37c81c94c58493b3122387001244b666c8
 
 Once the video is in S3, the bucket emits an event that triggers the Embedding
 Task Producer Lambda.
 
-### Embedding Generation
+### 5.1.2 Embedding Generation
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
@@ -75,7 +71,7 @@ handle errors. Since generating an embedding is an asynchronous process handled
 by an external service, we track the status of each job in the database until
 completion or failure.
 
-### Database Persistence
+### 5.1.3 Database Persistence
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
@@ -108,7 +104,7 @@ The search and retrieval pipeline is responsible for taking a user’s query,
 whether text, image, audio, or video, and retrieving a set of relevant video
 segments. The following steps describe this process in detail.
 
-### Processing the Query
+### 5.2.1 Processing the Query
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
@@ -138,7 +134,7 @@ documentation\](/api/operations/search)
 Once the request reaches the Search Handler Lambda, it is validated and parsed
 into an object containing query type, filters, and similarity thresholds
 
-### Retrieving Results
+### 5.2.2 Retrieving Results
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
@@ -154,7 +150,6 @@ embedding model calls:
   model used during ingestion). This call is synchronous, the Lambda actively
   waits for the embedding vectors to be returned. The new embeddings are then
   stored in DynamoDB.
--
 
 #### Step 4\. Search Handler Lambda ⭤ Database
 

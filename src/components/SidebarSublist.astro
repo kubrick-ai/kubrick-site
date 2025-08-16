@@ -10,7 +10,7 @@ interface Props {
 const { sublist } = Astro.props
 
 function hasCurrentPage(entries: StarlightRouteData['sidebar']): boolean {
-  return entries.some(entry => 
+  return entries.some(entry =>
     entry.type === 'link' ? entry.isCurrent : hasCurrentPage(entry.entries)
   )
 }
@@ -106,6 +106,10 @@ function hasCurrentPage(entries: StarlightRouteData['sidebar']): boolean {
     display: flex;
     color: inherit;
     text-decoration: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
   }
 
   .entry-link[aria-current='page'] {
