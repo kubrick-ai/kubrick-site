@@ -1,0 +1,212 @@
+---
+title: Challenges and Design Decisions
+sidebar:
+  order: 6
+---
+
+import ThemedDiagram from "@components/ThemedDiagram.astro";
+
+### 6.1 How We Decided On a Model
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+We chose to use TwelveLabs’ Marengo 2.7 as our embedding model because it is the
+only publicly available model that supports embedding video, audio, text, and
+images in the same embedding space. This allows us to support cross-modal search
+queries with a single model, which reduces search latency, points of failure and
+the complexity of our architecture. Marengo produces separate embeddings for
+each modality (visual-text and audio) and for each scope (clip-level and
+video-level), enabling retrieval at different granularities.
+
+Comparative evaluations show that it performs well in understanding video
+segments, particularly in cross-modal tasks such as finding a clip from a
+textual description that includes both scene and dialogue.
+
+#### Alternatives Considered
+
+We considered using Google’s `multimodalembedding` model, but it does not
+capture the audio modality of videos, meaning that we would have to manage
+another separate audio embedding model and those corresponding embeddings in
+order to support searches on and with audio.
+
+We also prototyped solutions with open-source models like CLIP, BLIP-2, and
+InternVideo, but we found that they were more complex to develop with and deploy
+at scale with no benefit in performance. They also did not support audio
+modality, and would require the same concessions as mentioned above.
+
+### 6.2 Why Serverless?
+
+Kubrick uses a serverless architecture to keep costs low, scale automatically,
+and minimize maintenance, ideal for teams where semantic video search is an
+add-on, not the core product. Content libraries, e-learning platforms, and media
+tools can offer advanced multimodal search without maintaining dedicated servers
+for a feature that may see fluctuating use.
+
+Here are some of the key benefits this approach brings:
+
+- **Cost Efficiency**: Pay only when the feature runs; no idle infrastructure
+  costs.
+
+- **Elastic Scaling**: Handles spikes (e.g., peak queries or bulk embedding
+  jobs) and scales to zero when idle.
+
+- **Model Flexibility:** API and embedding generation are decoupled, making
+  model swaps or upgrades simple. The multimodal embedding space is evolving
+  quickly, with new models offering better accuracy, efficiency, or
+  specialization. By isolating embedding requests and retrieval logic, and
+  keeping producer/consumer Lambdas separate, Kubrick can adopt a new provider
+  with minimal changes, often just updating provider-specific code.
+
+- **Low Maintenance**: No servers to patch, configure, or monitor, cloud
+  providers handle it.
+
+Why Not Traditional Deployment
+
+Containerized or monolithic setups incur costs even when idle, require more
+DevOps effort, and make upgrades harder in tightly coupled architectures.
+
+Trade-offs
+
+- **Cold Starts**: Short delays after idle periods; AWS provisioned concurrency
+  can keep Lambdas warm if needed.
+
+- **Execution Time Limits**: Functions run for only a few minutes, but Kubrick’s
+  workloads complete well within that.
+
+- **Less Low-Level Control**: Limited tuning options, but the managed
+  environment meets Kubrick’s needs.
+
+For Kubrick’s target users, serverless delivers the right balance of cost,
+scalability, and simplicity.
+
+### 6.4 Why SQS?
+
+Generating embeddings for video is a time-consuming process, with processing
+time dependent on video length and complexity. Keeping a Lambda function running
+while waiting for a response would be inefficient and costly due to AWS Lambda’s
+execution time limits and pricing model.
+
+Instead, we adopted a queue-based asynchronous architecture:
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+This approach ensures that no Lambda function waits idly, significantly reducing
+costs while improving scalability. It also provides built-in retry handling and
+decouples ingestion from embedding readiness checks.
+
+#### Alternatives Considered
+
+- **Step Functions**: Could coordinate asynchronous polling without manual queue
+  handling. However, Step Functions become expensive for long-running workflows
+  with frequent waits, and the complexity of state machine definitions would be
+  overkill for our relatively simple check-and-retry loop.
+- **Redis:** We considered storing our tasks state in a Redis key-value store,
+  but decided that provisioning, maintaining and manually polling a Redis
+  instance introduced unnecessary complexity.
+
+Trade-offs
+
+- Messages are not processed exactly once, duplicates are possible, requiring
+  idempotency in consumers.
+- No built-in notion of “task complete” without external checks.
+- Messages must be explicitly deleted after processing to avoid duplicates.
+- No native state tracking like Step Functions.
+- Polling adds a small delay (latency) before a task is re-checked.
+
+For **Kubrick**, these trade-offs were acceptable because our queries are
+asynchronous and tolerate small delays between checks. The simplicity,
+cost-effectiveness, and Lambda-native integration outweighed the operational
+complexity of alternatives.
+
+### 6.5 Why RDS (PostgreSQL \+ pgvector)?
+
+Kubrick’s search layer needed to store both embeddings and rich metadata (e.g.,
+filename, resolution, duration) while tracking embedding task statuses, all
+queryable in the same transactions. Using pgvector in RDS kept everything in one
+relational schema, enabling atomic writes, simpler queries, and no cross-service
+joins.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+RDS also provides managed backups, failover, and IAM-based access control
+without introducing additional SaaS dependencies. A key advantage is
+familiarity, most engineering teams already know Postgres, making it easier to
+adapt Kubrick’s schema to their needs.
+
+Alternatives Considered
+
+We evaluated pure vector databases as an alternative to RDS. Services like
+Pinecone excel at high-performance similarity search, but typically require a
+separate metadata store for fields such as filenames, resolution, or task
+statuses. This split adds latency, operational complexity, and more points of
+failure. While we opted for RDS to keep everything in one place, Kubrick’s
+modular design still allows integration with external vector databases if a
+team’s needs align better with that architecture.
+
+Challenges
+
+One unexpected challenge came from using Infrastructure as Code. While Terraform
+made it straightforward to provision the RDS instance itself, it cannot natively
+create or initialize the database schema. To bridge that gap, we introduced a DB
+Bootstrap Lambda. On deployment, this lambda runs a SQL script that creates the
+required tables, indexes, and pgvector extensions. The approach kept our
+database setup fully automated while preserving the benefits of Terraform for
+the rest of the infrastructure.
+
+### 6.6 Optimizing latency
+
+#### Calling AWS API asynchronously
+
+After we deployed the first version of our architecture on AWS, we noticed that
+response latency for some of our API endpoints was higher than we would expect.
+We investigated the logs and determined that the bottleneck was the process of
+generating presigned URLs for temporary S3 access.
+
+For example, the API endpoint handler for the `/videos` endpoint was calling the
+AWS S3 API to generate presigned URLs for each video object in the response.
+Since the AWS python SDK does not provide a way to call this function
+asynchronously, the latency of the response was scaling linearly with the number
+of videos requested. We rewrote the Lambda layer handling S3 operations to call
+the S3 API asynchronously using threads, which significantly improved response
+latency.
+
+#### Optimizing the Database
+
+By default, `pgvector` performs exact nearest neighbor search, which returns
+perfectly accurate results. However, this algorithm scales poorly relative
+because it compares the query embedding with each embedding in the database
+table (O(n)). Because we wanted to ensure that Kubrick’s search remained fast at
+scale, we decided to switch to Approximate Nearest Neighbour (ANN) search using
+the Hierarchical Navigable Small World (HNSW) algorithm.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+This means that instead of comparing our query with each embedding in the
+database, we now maintain a graph (as a PSQL index) that our algorithm traverses
+greedily to find the most similar set of embeddings. This reduces search time
+dramatically (\~O(log N)), but the trade-off is that insertion is slower and
+results are no longer “perfect”, so some relevant matches may be missed. Given
+that search query latency impacts user experience much more than ingestion time,
+and that recall performance with ANN was still very high, we found these
+trade-offs acceptable.
+
+Minimizing Redundant Embedding Requests
+
+We found that the biggest bottleneck for search request latency was the time
+spent waiting for the embedding model to process the search query. For media
+queries, which tend to have heavier payloads, the round-trip time (RTT) of the
+request could easily exceed 10s.
+
+To address this, we added a read-through cache layer deployed on DynamoDB.
+Search request parameters are used as the cache-key, to look-up and store vector
+embeddings returned from the external embedding model. We found that the caching
+layer significantly decreased latency for repeated queries, helping with use
+cases like content recommendation where media queries are common and cache hits
+are likely.
+
+DynamoDB was chosen over Elasticache because the performance benefits (\<10ms vs
+\<1ms) were relatively small compared to the latency of a cache-miss (\>1000ms).
+Though the read-through caching strategy is not as latency-efficient as
+write-behind, it allows us to decouple the caching layer from the rest of the
+architecture so that users can easily disable the cache according to their use
+case.
