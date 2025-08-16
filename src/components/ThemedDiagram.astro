@@ -1,21 +1,40 @@
 ---
-import { Zoom } from 'starlight-image-zoom/components'
+import { Zoom } from 'starlight-image-zoom/components';
+import { Image } from 'astro:assets';
 
 export interface Props {
   src: string;  // just the filename, like "simplified_architecture.png"
   alt: string;
 }
 
-const { src, alt} = Astro.props;
+const { src, alt } = Astro.props;
 
-// Use public URLs that Astro can resolve
-const lightSrc = `/src/assets/diagrams/light/${src}`;
-const darkSrc = `/src/assets/diagrams/dark/${src}`;
+// Use import.meta.glob to statically import all diagram images
+const images = import.meta.glob('../assets/diagrams/**/*.png', { eager: true }) as Record<string, { default: ImageMetadata }>;
+
+// Build the paths to look up in the glob result
+const lightPath = `../assets/diagrams/light/${src}`;
+const darkPath = `../assets/diagrams/dark/${src}`;
+
+// Get the imported images
+const lightImage = images[lightPath]?.default;
+const darkImage = images[darkPath]?.default;
+
+if (!lightImage || !darkImage) {
+  throw new Error(`Image not found: ${src}. Available images: ${Object.keys(images).join(', ')}`);
+}
 ---
 
-<Zoom label={alt}>
-  <img src={lightSrc} alt={alt} class="dark:sl-hidden" loading="lazy" />
-</Zoom>
-<Zoom label={alt}>
-  <img src={darkSrc} alt={alt} class="light:sl-hidden" loading="lazy" />
-</Zoom>
+<div class="themed-diagram">
+  <div class="dark:sl-hidden" >
+    <Zoom label={alt} >
+      <Image src={lightImage} alt={alt} loading="lazy" />
+    </Zoom>
+  </div>
+
+  <div class="light:sl-hidden" >
+    <Zoom label={alt}>
+      <Image src={darkImage} alt={alt} loading="lazy" />
+    </Zoom>
+  </div>
+</div>

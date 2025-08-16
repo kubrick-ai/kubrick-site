@@ -6,7 +6,7 @@ sidebar:
 
 import ThemedDiagram from "@components/ThemedDiagram.astro";
 
-## 2.1 The Problem with Traditional Video Search
+## The Problem with Traditional Video Search
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
@@ -22,7 +22,7 @@ While useful for some cases, this approach can miss relevant results if they’r
 described differently, for instance, “canine obedience” or “puppy learning
 commands”.
 
-### **2.2 Semantic Search**
+## Semantic Search
 
 Semantic search takes a different approach. Instead of matching words
 letter-for-letter, it uses machine learning to understand the meaning behind a
@@ -49,7 +49,7 @@ spelling (“color” vs. “colour”), differences in terminology (“doctor�
 "physician") and typos. Computers are able to derive this semantic understanding
 through the use of vector embeddings.
 
-### **2.3 Vector Embeddings**
+## Vector Embeddings
 
 A vector embedding is a numerical representation of data, essentially a “list”
 of numbers where each position captures a specific learned feature of that data.
@@ -73,7 +73,7 @@ while lexically similar, would produce distant embeddings.
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-### **2.4 How Have LLMs Evolved in Recent Years?**
+## How Have LLMs Evolved in Recent Years?
 
 Over the last few years, large language models (LLMs) like OpenAI’s GPT or
 Anthropic’s Claude have opened the door to a new class of intelligent
@@ -95,7 +95,7 @@ This shortfall of LLMs has given rise to a new category of software known as RAG
 applications that supplement LLM prompts with additional knowledge sources at
 query time to generate more accurate, up-to-date, and domain-specific responses.
 
-### **2.5 What is RAG?**
+## What is RAG?
 
 Retrieval-Augmented Generation (RAG) is a method for enhancing LLM performance
 by injecting contextually relevant information as context to a prompt leading to
@@ -136,7 +136,7 @@ order for RAG applications to be able to search and retrieve different types of
 data for context injection, they need to make use of more versatile multimodal
 embeddings to draw similarities between different forms of data.
 
-### **2.6 Multimodal Embeddings**
+## Multimodal Embeddings
 
 A modality is just a type of data \- text, image, audio, or video. Traditional
 “unimodal” embedding models specialize in a single modality: language models for

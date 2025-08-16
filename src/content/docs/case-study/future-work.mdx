@@ -4,7 +4,7 @@ sidebar:
   order: 7
 ---
 
-**Supporting other models**
+## Supporting other models
 
 Kubrick currently works with the Twelve Labs embedding model, but future updates
 could extend compatibility to other commercial video multi-embedding providers
@@ -14,7 +14,7 @@ and cost-effective deployments possible. This flexibility could give teams the
 choice between high-accuracy, fully managed APIs and privacy-focused,
 self-hosted solutions.
 
-**Query rewriting for improved search**
+## Query rewriting for improved search
 
 Through our work with semantic video search, we’ve found that more descriptive
 queries tend to produce better results. In the future, Kubrick could include an
@@ -24,7 +24,7 @@ visible in the background”). This would make searching more intuitive for all
 users and improve accuracy without requiring them to carefully craft their
 queries.
 
-**Re-ranking search results**
+## Re-ranking search results
 
 Another possible enhancement is adding a re-ranking step to further improve
 search accuracy. After the initial search identifies the top matches, a large
@@ -32,7 +32,7 @@ multimodal model could review and re-score the best 50 segments. This would help
 surface the most relevant clips first, particularly for complex or ambiguous
 searches.
 
-**VLM integration for video chat**
+## VLM integration for video chat
 
 Looking ahead, Kubrick could support conversational video exploration by
 integrating Video-Language Models (VLMs) such as Twelve Labs Pegasus, Google
@@ -41,7 +41,7 @@ could answer natural-language questions like, “Summarize the events in the las
 two minutes,” providing context-aware responses that combine visual, scene, and
 audio understanding.
 
-**Authentication for the API**
+## Authentication for the API
 
 Currently, the Kubrick API is open to simplify experimentation and allow teams
 to implement their own authentication methods. In the future, we could offer
@@ -49,7 +49,7 @@ built-in security options such as API keys, OAuth2, or JWT-based authentication.
 This would give teams an easier way to secure Kubrick without extra
 infrastructure.
 
-**Adding Cache Support for Ingestion Embeddings**
+## Adding Cache Support for Ingestion Embeddings
 
 Currently, only embedding requests for search queries utilise the cache layer.
 The ingestion pipeline generates a new embedding on every valid S3 Create event.

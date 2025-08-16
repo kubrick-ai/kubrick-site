@@ -10,7 +10,7 @@ const {
 // Extract section name from sidebar data by finding which section contains the current page
 function getSectionNameFromSidebar(sidebar: typeof Astro.locals.starlightRoute.sidebar): string {
   function hasCurrentPage(entries: typeof sidebar): boolean {
-    return entries.some(entry => 
+    return entries.some(entry =>
       entry.type === 'link' ? entry.isCurrent : hasCurrentPage(entry.entries)
     )
   }
