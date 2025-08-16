@@ -6,154 +6,64 @@ sidebar:
 
 import ThemedDiagram from "@components/ThemedDiagram.astro";
 
-### 6.1 How We Decided On a Model
+###  Choosing the Embedding Model
+
+Pending content...
+
+### Adopting Serverless
+
+Pending content...
+
+### Asynchronous Processing with SQS
+
+Once we committed to a serverless architecture, we ran into the problem of
+“waiting for embeddings to finish.” Video embeddings take time, and TwelveLabs
+doesn’t provide a webhook to notify completion. Our options were either to keep
+a Lambda alive until the API responded or find another way.
+
+Keeping Lambdas running wasn’t viable, execution is capped, billed per
+millisecond, and wasteful when idle. We considered Step Functions for polling,
+but their pricing penalizes long waits and the state machine overhead felt
+excessive for a simple “check and retry.” Redis was another option, but it
+meant provisioning and managing a separate service.
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-We chose to use TwelveLabs’ Marengo 2.7 as our embedding model because it is the
-only publicly available model that supports embedding video, audio, text, and
-images in the same embedding space. This allows us to support cross-modal search
-queries with a single model, which reduces search latency, points of failure and
-the complexity of our architecture. Marengo produces separate embeddings for
-each modality (visual-text and audio) and for each scope (clip-level and
-video-level), enabling retrieval at different granularities.
+Amazon SQS was the cleanest fit. Embedding jobs go into a queue, avoiding idle
+Lambdas and decoupling ingestion from embedding job checks. Retries were easy
+to implement: if a job wasn’t ready, the Lambda simply pushed the message back
+into the queue with boto3.
 
-Comparative evaluations show that it performs well in understanding video
-segments, particularly in cross-modal tasks such as finding a clip from a
-textual description that includes both scene and dialogue.
+The trade-offs were acceptable, consumers must be idempotent, messages
+explicitly deleted, and completion inferred externally, but for asynchronous
+embedding jobs, that balance of simplicity, scalability, and cost worked best.
 
-#### Alternatives Considered
+### Unified Storage with RDS
 
-We considered using Google’s `multimodalembedding` model, but it does not
-capture the audio modality of videos, meaning that we would have to manage
-another separate audio embedding model and those corresponding embeddings in
-order to support searches on and with audio.
-
-We also prototyped solutions with open-source models like CLIP, BLIP-2, and
-InternVideo, but we found that they were more complex to develop with and deploy
-at scale with no benefit in performance. They also did not support audio
-modality, and would require the same concessions as mentioned above.
-
-### 6.2 Why Serverless?
-
-Kubrick uses a serverless architecture to keep costs low, scale automatically,
-and minimize maintenance, ideal for teams where semantic video search is an
-add-on, not the core product. Content libraries, e-learning platforms, and media
-tools can offer advanced multimodal search without maintaining dedicated servers
-for a feature that may see fluctuating use.
-
-Here are some of the key benefits this approach brings:
-
-- **Cost Efficiency**: Pay only when the feature runs; no idle infrastructure
-  costs.
-
-- **Elastic Scaling**: Handles spikes (e.g., peak queries or bulk embedding
-  jobs) and scales to zero when idle.
-
-- **Model Flexibility:** API and embedding generation are decoupled, making
-  model swaps or upgrades simple. The multimodal embedding space is evolving
-  quickly, with new models offering better accuracy, efficiency, or
-  specialization. By isolating embedding requests and retrieval logic, and
-  keeping producer/consumer Lambdas separate, Kubrick can adopt a new provider
-  with minimal changes, often just updating provider-specific code.
-
-- **Low Maintenance**: No servers to patch, configure, or monitor, cloud
-  providers handle it.
-
-Why Not Traditional Deployment
-
-Containerized or monolithic setups incur costs even when idle, require more
-DevOps effort, and make upgrades harder in tightly coupled architectures.
-
-Trade-offs
-
-- **Cold Starts**: Short delays after idle periods; AWS provisioned concurrency
-  can keep Lambdas warm if needed.
-
-- **Execution Time Limits**: Functions run for only a few minutes, but Kubrick’s
-  workloads complete well within that.
-
-- **Less Low-Level Control**: Limited tuning options, but the managed
-  environment meets Kubrick’s needs.
-
-For Kubrick’s target users, serverless delivers the right balance of cost,
-scalability, and simplicity.
-
-### 6.4 Why SQS?
-
-Generating embeddings for video is a time-consuming process, with processing
-time dependent on video length and complexity. Keeping a Lambda function running
-while waiting for a response would be inefficient and costly due to AWS Lambda’s
-execution time limits and pricing model.
-
-Instead, we adopted a queue-based asynchronous architecture:
+For storing embeddings, we first looked at managed vector databases like
+Pinecone. They excel at similarity search but only store vectors, leaving
+metadata (filenames, resolutions, durations) and task tracking to a separate
+system, adding latency, joins, and more failure points.
 
 <ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
 
-This approach ensures that no Lambda function waits idly, significantly reducing
-costs while improving scalability. It also provides built-in retry handling and
-decouples ingestion from embedding readiness checks.
+We wanted simplicity, so we turned to PostgreSQL with pgvector in RDS. This gave
+us both vector search and relational queries in one schema, supporting atomic
+writes and eliminating cross-service glue. RDS also provided managed backups,
+failover, and IAM-based access control, without another SaaS dependency. A bonus
+was familiarity, most teams already know Postgres, making Kubrick’s schema easy
+to extend.
 
-#### Alternatives Considered
+One challenge was schema initialization. Terraform could provision the RDS
+instance but not create tables or extensions. To bridge that, we built a “DB
+Bootstrap” Lambda that runs on deployment and applies a SQL script, keeping the
+workflow automated while preserving Terraform’s control over infrastructure.
 
-- **Step Functions**: Could coordinate asynchronous polling without manual queue
-  handling. However, Step Functions become expensive for long-running workflows
-  with frequent waits, and the complexity of state machine definitions would be
-  overkill for our relatively simple check-and-retry loop.
-- **Redis:** We considered storing our tasks state in a Redis key-value store,
-  but decided that provisioning, maintaining and manually polling a Redis
-  instance introduced unnecessary complexity.
+In the end, RDS with pgvector gave us a single, reliable backbone for search,
+metadata, and task storage, leaner than a split system with Pinecone, but still
+flexible enough to evolve with new embedding models.
 
-Trade-offs
-
-- Messages are not processed exactly once, duplicates are possible, requiring
-  idempotency in consumers.
-- No built-in notion of “task complete” without external checks.
-- Messages must be explicitly deleted after processing to avoid duplicates.
-- No native state tracking like Step Functions.
-- Polling adds a small delay (latency) before a task is re-checked.
-
-For **Kubrick**, these trade-offs were acceptable because our queries are
-asynchronous and tolerate small delays between checks. The simplicity,
-cost-effectiveness, and Lambda-native integration outweighed the operational
-complexity of alternatives.
-
-### 6.5 Why RDS (PostgreSQL \+ pgvector)?
-
-Kubrick’s search layer needed to store both embeddings and rich metadata (e.g.,
-filename, resolution, duration) while tracking embedding task statuses, all
-queryable in the same transactions. Using pgvector in RDS kept everything in one
-relational schema, enabling atomic writes, simpler queries, and no cross-service
-joins.
-
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
-
-RDS also provides managed backups, failover, and IAM-based access control
-without introducing additional SaaS dependencies. A key advantage is
-familiarity, most engineering teams already know Postgres, making it easier to
-adapt Kubrick’s schema to their needs.
-
-Alternatives Considered
-
-We evaluated pure vector databases as an alternative to RDS. Services like
-Pinecone excel at high-performance similarity search, but typically require a
-separate metadata store for fields such as filenames, resolution, or task
-statuses. This split adds latency, operational complexity, and more points of
-failure. While we opted for RDS to keep everything in one place, Kubrick’s
-modular design still allows integration with external vector databases if a
-team’s needs align better with that architecture.
-
-Challenges
-
-One unexpected challenge came from using Infrastructure as Code. While Terraform
-made it straightforward to provision the RDS instance itself, it cannot natively
-create or initialize the database schema. To bridge that gap, we introduced a DB
-Bootstrap Lambda. On deployment, this lambda runs a SQL script that creates the
-required tables, indexes, and pgvector extensions. The approach kept our
-database setup fully automated while preserving the benefits of Terraform for
-the rest of the infrastructure.
-
-### 6.6 Optimizing latency
+### Optimizing Latency
 
 #### Calling AWS API asynchronously
 
@@ -190,7 +100,7 @@ that search query latency impacts user experience much more than ingestion time,
 and that recall performance with ANN was still very high, we found these
 trade-offs acceptable.
 
-Minimizing Redundant Embedding Requests
+#### Minimizing Redundant Embedding Requests
 
 We found that the biggest bottleneck for search request latency was the time
 spent waiting for the embedding model to process the search query. For media
