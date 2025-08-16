@@ -1,0 +1,30 @@
+---
+title: Introduction
+sidebar:
+  order: 1
+---
+
+import ThemedDiagram from "@components/ThemedDiagram.astro";
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+Kubrick lets you search video using natural language, images, audio, or other
+video clips, returning the exact moments that are most relevant.
+
+As video libraries grow across domains like sports, education, security, and
+marketing, finding a specific moment becomes tedious. Scrubbing through
+timelines, relying on inconsistent tags, or remembering file names is slow and
+often frustrating.
+
+Building a system that can understand video content is complex. It requires
+processing large files, extracting multimodal features, storing and indexing
+them efficiently, and serving fast search results, all while integrating into
+existing infrastructure.
+
+Kubrick solves this by providing an open-source end-to-end ingestion pipeline
+and API for video semantic search. The pipeline automatically generates vector
+embeddings from ingested video and stores them in a vector database. The API
+allows users to search the database and interact with the pipeline. Its modular,
+serverless architecture can be deployed directly into an AWS environment, giving
+teams full ownership of their data while remaining flexible enough to integrate
+new embedding models in the future.

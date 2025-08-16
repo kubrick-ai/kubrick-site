@@ -9,7 +9,7 @@ export const userConfig: StarlightThemeBlackUserConfig = {
     },
     {
       label: "Docs",
-      link: "/ref/quick-start",
+      link: "/guides/quick-start",
       attrs: {},
     },
     {

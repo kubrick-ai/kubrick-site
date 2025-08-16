@@ -1,0 +1,77 @@
+---
+title: Video Search Solutions
+sidebar:
+  order: 3
+---
+
+import ThemedDiagram from "@components/ThemedDiagram.astro";
+
+## 3.1 Existing Solutions
+
+TwelveLabs provides an end-to-end video search and understanding solution,
+powered by multimodal embedding and video understanding models. MomentsLab also
+provides a similar solution, though their approach relies primarily on
+AI-powered metadata extraction rather than multimodal semantic embeddings, which
+limits the types of queries users can perform.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+Enterprise solutions like those offered by TwelveLabs and MomentsLab offer
+active support, are more fully-featured, and offer integrations with other tools
+like Premiere Pro. However, these solutions are managed, which means less
+control over and visibility into the data pipeline. For teams that want to build
+and optimize a use-case-specific product utilizing an existing search platform,
+this can create unnecessary dependencies on external architecture and customer
+support.
+
+Users are also required to store their entire video library on these platforms,
+which may not be desirable for use cases where data privacy or cost minimization
+is a priority. Tight coupling with these platforms can also result in vendor
+lock-in. Given that multimodal embedding models are rapidly evolving, teams may
+prefer a more modular solution that allows for relatively easy future migration.
+
+Given this gap in the market, we built Kubrick for teams who need more control
+over their data and architecture but don't have the resources to build a
+semantic video search platform from scratch. Kubrick provides essential
+functionality without extraneous features while maintaining a modular
+architecture that helps teams stay future-proof and avoid vendor lock-in.
+
+## 3.2 Introducing Kubrick
+
+Kubrick’s solution is a video ingestion and search pipeline designed for
+developers who want to enhance their applications with semantic video search
+while retaining full ownership of their video data. Its easy-to-deploy, and its
+easy-to-use API strips away the complexity of large enterprise systems by
+focusing on the core challenge: accurate and efficient retrieval of relevant
+video content. By intentionally trading off the broader feature set of a full
+video RAG platform, Kubrick remains flexible enough to adapt to a wide range of
+use cases.
+
+### General Use Case
+
+Consider an organization with a large library of training videos looking to make
+them instantly accessible to staff on demand. Without Kubrick, they might rely
+on keyword search, hoping users know the exact title or metadata to find the
+right content. With Kubrick, the organization can ensure their staff can quickly
+access the right videos when they need them through its semantic search
+capabilities.
+
+### Security and Scalability Use Case
+
+A law firm stores thousands of hours of recorded depositions, hearings, and
+compliance training sessions. Lawyers and compliance officers often need to
+search across these recordings for key statements or evidence tied to specific
+cases. Kubrick enables precise, context-aware search directly within their
+secure AWS environment, maintaining control of sensitive data . The serverless
+model handles unpredictable query loads, like during a high-profile case or
+regulatory audit, without requiring constant infrastructure oversight.
+
+### Copyright Compliance
+
+A video sharing site needs to ensure that user-submitted content does not
+contain copyrighted material from its library of licensed shows. With Kubrick’s
+multimodal search, compliance teams can check for matches using a single frame
+from a video, a short audio sample or clip of dialogue. Kubrick then scans the
+entire content library for semantically similar matches. The site is able to set
+the minimum similarity score to prevent false positives while also catching
+infringements that simple fingerprinting might miss.
