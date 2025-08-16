@@ -70,7 +70,7 @@ export default defineConfig({
       },
 
       tableOfContents: {
-        maxHeadingLevel: 5,
+        maxHeadingLevel: 4,
       },
 
       expressiveCode: {
