@@ -1,0 +1,127 @@
+---
+title: Walkthrough
+sidebar:
+  order: 4
+---
+
+import ThemedDiagram from "@components/ThemedDiagram.astro";
+
+## Deployment
+
+Kubrick includes a CLI tool that automates the process of setting up and
+deploying the infrastructure, meaning developers can have an ingestion pipeline
+up and running in a matter of minutes.
+
+\[cli tool demo gif\]
+
+**Steps**:
+
+- Clone repository
+  - `git clone https://github.com/kubrick-ai/kubrick.git`
+  - `cd kubrick`
+- Deploy Infrastructure
+  - `kubrick deploy`
+- Fast forward to the CLI outputs
+  - Perhaps we can highlight the API and Playground URLs that we will be using
+    later in the walkthrough
+
+Full CLI deployment documentation is available [here](/guides/quick-start).
+
+## API
+
+Deploying the infrastructure will expose the Kubrick API:
+
+\[code examples for calling the API with curl/js\]
+
+**Steps**:
+
+- Use curl to perform the following actions
+  - Upload a video
+    - Generate the presigned URL
+      - curl \-X GET
+        "https://API_URL/v1_0/generate-upload-link?filename=test.mp4"
+    - Upload video file
+      - curl \-X PUT \\  
+        \--upload-file test.mp4 \\  
+        \-H "Content-Type: video/mp4" \\  
+        "https://PRESIGNED_URL”
+
+  - Search video using text
+    - curl \-X POST "https://API_URL/v1_0/search" \\
+
+    \-F "query_type=text" \\
+
+    \-F "query_text=defining a function"
+
+Full API documentation is available \[here\](/api)
+
+## Playground
+
+The deployment includes a playground web interface, hosted as an S3 static site.
+The playground serves as an implementation example for the core features of the
+Kubrick API.
+
+### Ingestion
+
+Users can upload videos into a private library, which will automatically create
+an embedding task.
+
+\[Example recording of a video being uploaded \+ popping up on the embedding
+tasks table\]
+
+**Steps:**
+
+- From the initial page of the playground navigate to the embed page
+- Upload 3-5 videos
+- Navigate to the embedding tasks page
+- Focus on the status changes for each of the embedding tasks
+
+Video ideas:
+
+- The video with the explosion
+- Coding related
+- Take on me video, so we can use it to search using a cover of the same song
+- Video where the person was screaming
+- Video in the store
+
+Videos to be uploaded here:
+
+- Location in the drive with the videos
+
+### Text Queries
+
+Text queries return relevant results even if they describe qualities that aren’t
+concrete like emotion, tone, composition, visual style, and movement.
+
+\[Example recordings of text queries\]
+
+**Steps:**
+
+- Starting from the search page
+- Type “A person screaming”
+- Show the first 2 matches
+
+### Media Queries
+
+Kubrick also enables querying with image, audio, and video files. Users can
+upload a reference image to find visually similar scenes, search using an audio
+clip to locate moments with matching soundscapes or music, or provide a video
+segment to retrieve the most similar clips in the library.
+
+\[Example recordings: explosion image \+ explosions, song cover\]
+
+**Image \- Steps:**
+
+- Starting from the search page
+- Click “Advanced Search”
+- Choose query type “Image”
+- Use “explosion.jpg”
+- Show the first match
+
+**Video \- Steps:**
+
+- Starting from the search page
+- Click “Advanced Search”
+- Choose query type “video”
+- Use “take_on_me_cover.mp4”
+- Show the first match

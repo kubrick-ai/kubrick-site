@@ -33,8 +33,8 @@ export default defineConfig({
           autogenerate: { directory: "case-study" },
         },
         {
-          label: "Reference",
-          autogenerate: { directory: "ref" },
+          label: "Guides",
+          autogenerate: { directory: "guides" },
         },
         // Using manual sidebar elements instead of auto-generated sidebar group
         {
@@ -70,7 +70,7 @@ export default defineConfig({
       },
 
       tableOfContents: {
-        maxHeadingLevel: 5,
+        maxHeadingLevel: 4,
       },
 
       expressiveCode: {

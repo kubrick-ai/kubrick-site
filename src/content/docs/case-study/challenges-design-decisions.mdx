@@ -1,0 +1,122 @@
+---
+title: Challenges & Design Decisions
+sidebar:
+  order: 6
+---
+
+import ThemedDiagram from "@components/ThemedDiagram.astro";
+
+###  Choosing the Embedding Model
+
+Pending content...
+
+### Adopting Serverless
+
+Pending content...
+
+### Asynchronous Processing with SQS
+
+Once we committed to a serverless architecture, we ran into the problem of
+“waiting for embeddings to finish.” Video embeddings take time, and TwelveLabs
+doesn’t provide a webhook to notify completion. Our options were either to keep
+a Lambda alive until the API responded or find another way.
+
+Keeping Lambdas running wasn’t viable, execution is capped, billed per
+millisecond, and wasteful when idle. We considered Step Functions for polling,
+but their pricing penalizes long waits and the state machine overhead felt
+excessive for a simple “check and retry.” Redis was another option, but it
+meant provisioning and managing a separate service.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+Amazon SQS was the cleanest fit. Embedding jobs go into a queue, avoiding idle
+Lambdas and decoupling ingestion from embedding job checks. Retries were easy
+to implement: if a job wasn’t ready, the Lambda simply pushed the message back
+into the queue with boto3.
+
+The trade-offs were acceptable, consumers must be idempotent, messages
+explicitly deleted, and completion inferred externally, but for asynchronous
+embedding jobs, that balance of simplicity, scalability, and cost worked best.
+
+### Unified Storage with RDS
+
+For storing embeddings, we first looked at managed vector databases like
+Pinecone. They excel at similarity search but only store vectors, leaving
+metadata (filenames, resolutions, durations) and task tracking to a separate
+system, adding latency, joins, and more failure points.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+We wanted simplicity, so we turned to PostgreSQL with pgvector in RDS. This gave
+us both vector search and relational queries in one schema, supporting atomic
+writes and eliminating cross-service glue. RDS also provided managed backups,
+failover, and IAM-based access control, without another SaaS dependency. A bonus
+was familiarity, most teams already know Postgres, making Kubrick’s schema easy
+to extend.
+
+One challenge was schema initialization. Terraform could provision the RDS
+instance but not create tables or extensions. To bridge that, we built a “DB
+Bootstrap” Lambda that runs on deployment and applies a SQL script, keeping the
+workflow automated while preserving Terraform’s control over infrastructure.
+
+In the end, RDS with pgvector gave us a single, reliable backbone for search,
+metadata, and task storage, leaner than a split system with Pinecone, but still
+flexible enough to evolve with new embedding models.
+
+### Optimizing Latency
+
+#### Calling AWS API asynchronously
+
+After we deployed the first version of our architecture on AWS, we noticed that
+response latency for some of our API endpoints was higher than we would expect.
+We investigated the logs and determined that the bottleneck was the process of
+generating presigned URLs for temporary S3 access.
+
+For example, the API endpoint handler for the `/videos` endpoint was calling the
+AWS S3 API to generate presigned URLs for each video object in the response.
+Since the AWS python SDK does not provide a way to call this function
+asynchronously, the latency of the response was scaling linearly with the number
+of videos requested. We rewrote the Lambda layer handling S3 operations to call
+the S3 API asynchronously using threads, which significantly improved response
+latency.
+
+#### Optimizing the Database
+
+By default, `pgvector` performs exact nearest neighbor search, which returns
+perfectly accurate results. However, this algorithm scales poorly relative
+because it compares the query embedding with each embedding in the database
+table (O(n)). Because we wanted to ensure that Kubrick’s search remained fast at
+scale, we decided to switch to Approximate Nearest Neighbour (ANN) search using
+the Hierarchical Navigable Small World (HNSW) algorithm.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+This means that instead of comparing our query with each embedding in the
+database, we now maintain a graph (as a PSQL index) that our algorithm traverses
+greedily to find the most similar set of embeddings. This reduces search time
+dramatically (\~O(log N)), but the trade-off is that insertion is slower and
+results are no longer “perfect”, so some relevant matches may be missed. Given
+that search query latency impacts user experience much more than ingestion time,
+and that recall performance with ANN was still very high, we found these
+trade-offs acceptable.
+
+#### Minimizing Redundant Embedding Requests
+
+We found that the biggest bottleneck for search request latency was the time
+spent waiting for the embedding model to process the search query. For media
+queries, which tend to have heavier payloads, the round-trip time (RTT) of the
+request could easily exceed 10s.
+
+To address this, we added a read-through cache layer deployed on DynamoDB.
+Search request parameters are used as the cache-key, to look-up and store vector
+embeddings returned from the external embedding model. We found that the caching
+layer significantly decreased latency for repeated queries, helping with use
+cases like content recommendation where media queries are common and cache hits
+are likely.
+
+DynamoDB was chosen over Elasticache because the performance benefits (\<10ms vs
+\<1ms) were relatively small compared to the latency of a cache-miss (\>1000ms).
+Though the read-through caching strategy is not as latency-efficient as
+write-behind, it allows us to decouple the caching layer from the rest of the
+architecture so that users can easily disable the cache according to their use
+case.

@@ -1,0 +1,176 @@
+---
+title: Background
+sidebar:
+  order: 2
+---
+
+import ThemedDiagram from "@components/ThemedDiagram.astro";
+
+## The Problem with Traditional Video Search
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+Finding specific moments inside videos has always been a challenge. Most search
+systems rely on metadata like titles, tags, or short descriptions, meaning the
+actual video content, visuals, sounds, and speech, remains invisible to the
+search engine.This forces people to manually scrub through hours of footage to
+find what they need, a slow and frustrating process.
+
+Traditional search relies on exact matches. If you type “dog training” into a
+search bar, it will return only results containing those exact words or tags.
+While useful for some cases, this approach can miss relevant results if they’re
+described differently, for instance, “canine obedience” or “puppy learning
+commands”.
+
+## Semantic Search
+
+Semantic search takes a different approach. Instead of matching words
+letter-for-letter, it uses machine learning to understand the meaning behind a
+query and find content that is conceptually similar. It analyzes the context and
+intent of the query rather than the lexical construct of the query to find
+matches that have a similar semantic meaning.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+For example, if you searched for “teaching a dog to sit,” a semantic search
+system may find relevant articles titled:
+
+- Top Tips For Training Your Puppy.
+- How to Reward Dogs With Positive Reinforcement Training.
+- A Beginner’s Guide to Puppy Obedience
+
+While these articles don’t explicitly use the terms “teaching” or “sit” in the
+titles, their semantic meaning, basic dog training, is similar to the intent of
+the query.
+
+Semantic search is more effective than keyword search because it is flexible
+enough to work around common pit-falls of keyword search, like differences in
+spelling (“color” vs. “colour”), differences in terminology (“doctor” vs
+"physician") and typos. Computers are able to derive this semantic understanding
+through the use of vector embeddings.
+
+## Vector Embeddings
+
+A vector embedding is a numerical representation of data, essentially a “list”
+of numbers where each position captures a specific learned feature of that data.
+Since computers can’t understand images, sounds, or text in their raw form the
+way humans do, they rely on these numerical representations to process and
+compare them.
+
+Embedding models are machine learning systems trained on massive datasets to
+learn patterns and relationships in language. These models transform raw inputs
+into dense vectors that capture the meaning of the data, not just its surface
+form. This transformation, from raw data to a meaning-rich vector, is what we
+call embedding.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+In the resulting embedding space, a multi-dimensional map, items with similar
+meaning are placed closer together, while unrelated items are farther apart. For
+instance, the words “queen” and “princess” may generate embeddings that are
+geometrically close, despite their differences. Conversely, “dog” and “hotdog,”
+while lexically similar, would produce distant embeddings.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+## How Have LLMs Evolved in Recent Years?
+
+Over the last few years, large language models (LLMs) like OpenAI’s GPT or
+Anthropic’s Claude have opened the door to a new class of intelligent
+applications, from autonomous agents to context-aware copilots and
+conversational interfaces.
+
+App developers are increasingly building AI agents that rely on LLMs to perform
+tasks, make decisions, and interface with other systems. These agents can be
+highly capable, but LLMs also come with their own set of tradeoffs that product
+teams must design around.
+
+A common challenge is the fact that LLMs are trained on static snapshots of
+internet-scale data. This means they lack up-to-date or domain-specific
+knowledge, especially critical in enterprise settings where internal documents,
+proprietary systems, or real-time events are essential to effective
+decision-making.
+
+This shortfall of LLMs has given rise to a new category of software known as RAG
+applications that supplement LLM prompts with additional knowledge sources at
+query time to generate more accurate, up-to-date, and domain-specific responses.
+
+## What is RAG?
+
+Retrieval-Augmented Generation (RAG) is a method for enhancing LLM performance
+by injecting contextually relevant information as context to a prompt leading to
+responses that are more accurate and precise.
+
+Often, an LLM will only need segments of a larger piece of content to provide an
+accurate response to a query. In these instances providing the entire article as
+context can be both expensive and lead to inaccurate responses as the model
+becomes confused by the irrelevant information it was provided. RAG applications
+strike a balance by injecting only the most relevant chunks of information,
+using vector embeddings and similarity search.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+A typical RAG workflow has three core stages:
+
+1. **Knowledge Base**: Source material (e.g., documents, transcripts, images, or
+   videos) is transformed into vector embeddings using an embedding model.
+
+2. **Similarity Search:** At query time, the question is embedded into the same
+   space. A vector search retrieves the stored embeddings most semantically
+   similar to the query.
+
+3. **Context Injection**: Retrieved content is inserted into the LLM’s prompt,
+   giving it targeted, context-rich information to reason with before generating
+   its response.
+
+Because RAG injects only the most contextually relevant information to a prompt,
+developers can reduce the chance of hallucination and have greater control of
+the costs of their AI applications.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+As LLM’s capabilities extend beyond natural language processing to include
+formats such as image and video understanding, an opportunity to provide
+different modalities of data as context to AI prompts has arisen. However, in
+order for RAG applications to be able to search and retrieve different types of
+data for context injection, they need to make use of more versatile multimodal
+embeddings to draw similarities between different forms of data.
+
+## Multimodal Embeddings
+
+A modality is just a type of data \- text, image, audio, or video. Traditional
+“unimodal” embedding models specialize in a single modality: language models for
+text, vision models for images, speech models for audio. Multimodal models break
+this barrier by learning to represent and relate features from multiple
+modalities within a shared embedding space.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+This shared embedding space allows information from different sources to be
+directly compared. For example, the sentence _“a red sports car speeding down a
+highway”_ and an image of that same car map to nearby points in the embedding
+space, even though the embeddings originate from different types of data.
+
+<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+
+Multimodal embeddings are particularly important for video, because videos are
+inherently composite, combining visuals, audio, speech, and the dimension of
+time. They enable us to build semantic search systems that produce higher
+quality results, since the embedding models can combine features from multiple
+channels to better “understand” the content. These systems can also accept more
+flexible queries across modalities, allowing users to search for relevant media
+using text descriptions, spoken phrases, or images.
+
+Multimodal semantic search systems are used for:
+
+- **Creative discovery:** filmmakers can locate shots with a specific mood,
+  composition, or sound.
+
+- **Content management:** archivists can organize large collections by meaning,
+  not just tags.
+
+- **Accessibility:** people can search in whichever format they’re most
+  comfortable with, whether spoken, written, or visual.
+
+- **Security & compliance:** detecting sensitive scenes or sounds even when
+  they’re unlabeled.

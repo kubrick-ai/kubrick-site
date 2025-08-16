@@ -1,0 +1,60 @@
+---
+title: Future Work
+sidebar:
+  order: 7
+---
+
+## Supporting other models
+
+Kubrick currently works with the Twelve Labs embedding model, but future updates
+could extend compatibility to other commercial video multi-embedding providers
+like Google Vertex AI or new services as they emerge. We also see potential in
+exploring open-source models such as InternVideo2, which would make on-premises
+and cost-effective deployments possible. This flexibility could give teams the
+choice between high-accuracy, fully managed APIs and privacy-focused,
+self-hosted solutions.
+
+## Query rewriting for improved search
+
+Through our work with semantic video search, we’ve found that more descriptive
+queries tend to produce better results. In the future, Kubrick could include an
+AI-powered query rewriter that transforms short or vague prompts (e.g., “dog”)
+into richer descriptions (e.g., “scenes where a dog is in the main frame or
+visible in the background”). This would make searching more intuitive for all
+users and improve accuracy without requiring them to carefully craft their
+queries.
+
+## Re-ranking search results
+
+Another possible enhancement is adding a re-ranking step to further improve
+search accuracy. After the initial search identifies the top matches, a large
+multimodal model could review and re-score the best 50 segments. This would help
+surface the most relevant clips first, particularly for complex or ambiguous
+searches.
+
+## VLM integration for video chat
+
+Looking ahead, Kubrick could support conversational video exploration by
+integrating Video-Language Models (VLMs) such as Twelve Labs Pegasus, Google
+Gemini Pro, or LLaVA. After retrieving relevant video segments, these models
+could answer natural-language questions like, “Summarize the events in the last
+two minutes,” providing context-aware responses that combine visual, scene, and
+audio understanding.
+
+## Authentication for the API
+
+Currently, the Kubrick API is open to simplify experimentation and allow teams
+to implement their own authentication methods. In the future, we could offer
+built-in security options such as API keys, OAuth2, or JWT-based authentication.
+This would give teams an easier way to secure Kubrick without extra
+infrastructure.
+
+## Adding Cache Support for Ingestion Embeddings
+
+Currently, only embedding requests for search queries utilise the cache layer.
+The ingestion pipeline generates a new embedding on every valid S3 Create event.
+This means that frequent S3 rename or move operations, or repeated uploads of
+identical videos under different names, will result in redundant calls to the
+external embedding API. Integrating the caching layer with the ingestion
+pipeline would eliminate the monetary and latency costs of calling the embedding
+API by recognizing and reusing embeddings for duplicate content.

@@ -5,41 +5,49 @@ sidebar:
   order: 2
 ---
 
-import { Steps } from '@astrojs/starlight/components';
-import { Aside } from '@astrojs/starlight/components';
-import { FileTree } from '@astrojs/starlight/components';
+import { Steps } from "@astrojs/starlight/components";
+import { Aside } from "@astrojs/starlight/components";
+import { FileTree } from "@astrojs/starlight/components";
 
-Advanced deployment guide for users who need direct Terraform control, CI/CD integration, or custom infrastructure configurations.
+Advanced deployment guide for users who need direct Terraform control, CI/CD
+integration, or custom infrastructure configurations.
 
 :::note[When to Use Manual Setup]
+
 Use this guide if you need:
+
 - Custom Terraform configurations
 - CI/CD pipeline integration
 - Advanced AWS networking setups
 - Direct control over infrastructure state
 - Integration with existing Terraform workflows
 
-For most users, the [Quick Start](/ref/quick-start) CLI guide is recommended.
+For most users, the [Quick Start](/guides/quick-start) CLI guide is recommended.
 :::
 
 ## Prerequisites
 
 ### Required Software
 
-- **Terraform** (>= 1.0) - [Installation Guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
-- **AWS CLI** (>= 2.15.0) - [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- **Terraform** (>= 1.0) -
+  [Installation Guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+- **AWS CLI** (>= 2.15.0) -
+  [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 - **Python** (>= 3.13) - [Installation Guide](https://www.python.org/downloads/)
-- **uv** - [Installation Guide](https://docs.astral.sh/uv/getting-started/installation/)
-- **Node.js** (>= 24.2.0) & **npm** (>= 11.4.2) - [Installation Guide](https://nodejs.org/)
+- **uv** -
+  [Installation Guide](https://docs.astral.sh/uv/getting-started/installation/)
+- **Node.js** (>= 24.2.0) & **npm** (>= 11.4.2) -
+  [Installation Guide](https://nodejs.org/)
 
 ### AWS Account Requirements
 
 - AWS account with appropriate permissions
 - AWS CLI configured: `aws configure`
-- **TwelveLabs API Key** - [Get your API key](https://docs.twelvelabs.io/docs/api-key)
+- **TwelveLabs API Key** -
+  [Get your API key](https://docs.twelvelabs.io/docs/api-key)
 
-:::caution[AWS Permissions Required]
-Your AWS user/role needs these permissions:
+:::caution[AWS Permissions Required] Your AWS user/role needs these permissions:
+
 - `AmazonS3FullAccess`
 - `AWSLambda_FullAccess`
 - `AmazonAPIGatewayAdministrator`
@@ -49,56 +57,27 @@ Your AWS user/role needs these permissions:
 - `SecretsManagerReadWrite`
 - `IAMFullAccess`
 
-For production deployments, consider custom policies following the principle of least privilege.
-:::
+For production deployments, consider custom policies following the principle of
+least privilege. :::
 
 ## Project Structure Overview
 
-Understanding the Kubrick project structure will help with customization and troubleshooting:
+Understanding the Kubrick project structure will help with customization and
+troubleshooting:
 
 <FileTree>
-- kubrick/
-  - cli/                    # Command-line interface tool
-    - src/
-    - package.json
-  - lambda/                 # Serverless functions
-    - src/
-      - api_fetch_tasks_handler/
-      - api_fetch_videos_handler/
-      - api_search_handler/
-      - api_video_upload_link_handler/
-      - db_bootstrap/
-      - s3_delete_handler/
-      - sqs_embedding_task_consumer/
-      - sqs_embedding_task_producer/
-      - layers/
-        - config_layer/
-        - embed_service_layer/
-        - response_utils_layer/
-        - s3_utils_layer/
-        - vector_database_layer/
-    - build-package.sh       # Lambda build script
-  - playground/             # Next.js frontend
-    - src/
-    - package.json
-  - terraform/              # Infrastructure as Code
-    - modules/
-      - api_gateway/
-      - cloudfront/
-      - dynamodb/
-      - iam/
-      - lambda/
-      - rds/
-      - s3/
-      - s3_notifications/
-      - secrets_manager/
-      - sqs/
-      - vpc_network/
-    - main.tf
-    - variables.tf
-    - terraform.tfvars.example
-  - build-all-packages.sh   # Build all Lambda packages
-  - README.md
+  - kubrick/ - cli/ # Command-line interface tool - src/ - package.json -
+  lambda/ # Serverless functions - src/ - api_fetch_tasks_handler/ -
+  api_fetch_videos_handler/ - api_search_handler/ -
+  api_video_upload_link_handler/ - db_bootstrap/ - s3_delete_handler/ -
+  sqs_embedding_task_consumer/ - sqs_embedding_task_producer/ - layers/ -
+  config_layer/ - embed_service_layer/ - response_utils_layer/ - s3_utils_layer/
+  - vector_database_layer/ - build-package.sh # Lambda build script -
+  playground/ # Next.js frontend - src/ - package.json - terraform/ #
+  Infrastructure as Code - modules/ - api_gateway/ - cloudfront/ - dynamodb/ -
+  iam/ - lambda/ - rds/ - s3/ - s3_notifications/ - secrets_manager/ - sqs/ -
+  vpc_network/ - main.tf - variables.tf - terraform.tfvars.example -
+  build-all-packages.sh # Build all Lambda packages - README.md
 </FileTree>
 
 ## Manual Deployment Process
@@ -148,30 +127,29 @@ Understanding the Kubrick project structure will help with customization and tro
    ```hcl
    # Required variables
    aws_region = "us-east-1"  # Your AWS region
-   
+
    # Database credentials
    db_username = "postgres"  # Your PostgreSQL username
    db_password = "your-secure-password"  # Your PostgreSQL password
-   
+
    # API keys
    twelvelabs_api_key = "your-twelvelabs-api-key"  # Your TwelveLabs API key
-   
+
    # Optional: Override defaults
    aws_profile = "default"
    secret_name = "kubrick_secret"
    stage_name = "v1_0"
    ```
 
-   :::tip[Variable Reference]
-   All available variables are defined in `variables.tf`:
+   :::tip[Variable Reference] All available variables are defined in
+   `variables.tf`:
    - `aws_region` - AWS region for deployment (default: us-east-2)
    - `secret_name` - Secrets Manager secret name (default: kubrick_secret)
    - `db_username` - PostgreSQL username (required)
    - `db_password` - PostgreSQL password (required, sensitive)
    - `twelvelabs_api_key` - TwelveLabs API key (required, sensitive)
    - `aws_profile` - AWS CLI profile (default: default)
-   - `stage_name` - API Gateway stage (default: v1_0)
-   :::
+   - `stage_name` - API Gateway stage (default: v1_0) :::
 
 5. **Review Deployment Plan**
 
@@ -215,7 +193,7 @@ If you already have a secret named `kubrick_secret` in AWS Secrets Manager:
 
    Required keys:
    - `DB_USERNAME`
-   - `DB_PASSWORD` 
+   - `DB_PASSWORD`
    - `TWELVELABS_API_KEY`
 
 2. **Update Secret if Needed**
@@ -227,7 +205,7 @@ If you already have a secret named `kubrick_secret` in AWS Secrets Manager:
      --secret-id kubrick_secret \
      --secret-string '{
        "DB_USERNAME": "postgres",
-       "DB_PASSWORD": "your-password", 
+       "DB_PASSWORD": "your-password",
        "TWELVELABS_API_KEY": "your-api-key"
      }'
    ```
@@ -251,17 +229,18 @@ If you already have a secret named `kubrick_secret` in AWS Secrets Manager:
 ### Handling Resource Conflicts
 
 :::warning[Common Import Issues]
+
 - **ResourceExistsException**: Follow the secret import steps above
-- **VPC/Subnet conflicts**: Ensure your AWS account doesn't have conflicting default VPC settings
-- **IAM role conflicts**: Check for existing roles with similar names
-:::
+- **VPC/Subnet conflicts**: Ensure your AWS account doesn't have conflicting
+  default VPC settings
+- **IAM role conflicts**: Check for existing roles with similar names :::
 
 ## Terraform Architecture Overview
 
 ### Core Modules
 
 - **`api_gateway`** - REST API endpoints for video operations
-- **`cloudfront`** - CDN for global content delivery  
+- **`cloudfront`** - CDN for global content delivery
 - **`dynamodb`** - Embedding cache for performance optimization
 - **`iam`** - Roles and policies for service permissions
 - **`lambda`** - Serverless functions and layers
@@ -320,17 +299,18 @@ After deployment completes:
    ```bash
    # Lambda functions
    aws lambda list-functions --query 'Functions[?contains(FunctionName, `kubrick`)]'
-   
+
    # API Gateway
    aws apigateway get-rest-apis --query 'items[?contains(name, `kubrick`)]'
-   
+
    # S3 buckets
    aws s3 ls | grep kubrick
    ```
 
 3. **Test the Playground**
 
-   Access the CloudFront URL from the Terraform output to test the web interface.
+   Access the CloudFront URL from the Terraform output to test the web
+   interface.
 
 4. **API Health Check**
 
@@ -374,11 +354,11 @@ stage_name = "production"  # Creates /production/ endpoints
 ### Common Issues
 
 :::note[Deployment Failures]
+
 - **Build script errors**: Ensure Python 3.13 and `uv` are installed
 - **Terraform init fails**: Check AWS credentials and region
 - **Lambda package too large**: Verify dependencies in `pyproject.toml` files
-- **RDS timeout**: Increase default timeout or check VPC configuration
-:::
+- **RDS timeout**: Increase default timeout or check VPC configuration :::
 
 ### Debug Commands
 
@@ -413,9 +393,8 @@ terraform state rm aws_s3_bucket.example
 
 ### Destroying Infrastructure
 
-:::danger[Data Loss Warning]
-This will permanently delete all data including uploaded videos and database contents.
-:::
+:::danger[Data Loss Warning] This will permanently delete all data including
+uploaded videos and database contents. :::
 
 ```bash
 terraform destroy
@@ -436,6 +415,7 @@ terraform destroy -target=module.rds
 ### Cost Optimization
 
 Monitor AWS costs and consider:
+
 - RDS instance sizing
 - CloudFront usage patterns
 - Lambda memory allocation
@@ -481,7 +461,7 @@ Create separate `.tfvars` files for each environment:
 # Development
 terraform apply -var-file="dev.tfvars"
 
-# Production  
+# Production
 terraform apply -var-file="prod.tfvars"
 ```
 
@@ -489,4 +469,5 @@ terraform apply -var-file="prod.tfvars"
 
 - **API Integration**: Explore the [API Reference](/api/reference)
 - **Architecture Details**: Read the [Case Study](/case-study/intro)
-- **CLI Tool**: Try the [Quick Start](/ref/quick-start) for simpler deployments
+- **CLI Tool**: Try the [Quick Start](/guides/quick-start) for simpler
+  deployments
