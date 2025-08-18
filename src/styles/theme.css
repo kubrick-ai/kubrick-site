@@ -24,23 +24,17 @@
       #8295ff 100%
     );
     --gradient-heading-secondary: linear-gradient(20deg, #fb923c, #f472b6);
-    /* --gradient-diagram-bg: linear-gradient( */
-    /*   20deg, */
-    /*   oklch(0.92 0.0669 215.85) 0%, */
-    /*   oklch(0.9367 0.0701 330) 30%, */
-    /*   oklch(0.8808 0.0905 51.34) 80% */
-    /* ); */
+
+    --gradient-diagram-bg: linear-gradient(
+      20deg,
+      oklch(0.6818 0.1938 238.29 / 12%),
+      oklch(0.5614 0.3014 297.77 / 10%)
+    );
   }
 
   :root[data-theme="light"] {
     --sl-color-banner-bg: oklch(0.97 0.01 255);
     --sl-color-banner-border: oklch(0.55 0.22 263);
-
-    --gradient-diagram-bg: linear-gradient(
-      20deg,
-      oklch(0.9073 0.0554 238.29 / 51.79%),
-      oklch(0.9088 0.0554 297.77 / 52.19%)
-    );
 
     --gradient-aside-tip: linear-gradient(
       20deg,
@@ -98,11 +92,11 @@
     --sl-color-banner-bg: oklch(0.28 0.09 268);
     --sl-color-banner-border: oklch(0.38 0.14 266);
 
-    --gradient-diagram-bg: linear-gradient(
-      20deg,
-      oklch(0.2365 0.063 238.29 / 80%),
-      oklch(0.1753 0.0788 297.77 / 80%)
-    );
+    /* --gradient-diagram-bg: linear-gradient( */
+    /*   20deg, */
+    /*   oklch(0.2365 0.063 238.29 / 80%), */
+    /*   oklch(0.1753 0.0788 297.77 / 80%) */
+    /* ); */
 
     --gradient-aside-tip: linear-gradient(
       20deg,

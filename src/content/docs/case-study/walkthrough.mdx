@@ -5,6 +5,9 @@ sidebar:
 ---
 
 import ThemedDiagram from "@components/ThemedDiagram.astro";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Image } from "astro:assets";
+import cliDemoDeploy from "@assets/cli-demo-deploy.avifs";
 
 ## Deployment
 
@@ -12,18 +15,12 @@ Kubrick includes a CLI tool that automates the process of setting up and
 deploying the infrastructure, meaning developers can have an ingestion pipeline
 up and running in a matter of minutes.
 
-\[cli tool demo gif\]
+```bash
+git clone https://github.com/kubrick-ai/kubrick.git && cd kubrick/cli && npm run build
+kubrick deploy
+```
 
-**Steps**:
-
-- Clone repository
-  - `git clone https://github.com/kubrick-ai/kubrick.git`
-  - `cd kubrick`
-- Deploy Infrastructure
-  - `kubrick deploy`
-- Fast forward to the CLI outputs
-  - Perhaps we can highlight the API and Playground URLs that we will be using
-    later in the walkthrough
+<Image src={cliDemoDeploy} alt='CLI Deployment Demo' width={800} height={800} />
 
 Full CLI deployment documentation is available [here](/guides/quick-start).
 
@@ -31,29 +28,54 @@ Full CLI deployment documentation is available [here](/guides/quick-start).
 
 Deploying the infrastructure will expose the Kubrick API:
 
-\[code examples for calling the API with curl/js\]
+<Tabs>
+  <TabItem label='bash'>
 
-**Steps**:
+```bash
+curl -X POST https://API_URL/v1_0/search
+-H Content-Type: multipart/form-data \
+-F query_type=text \
+-F query_text="A red sports car driving down the highway" \
+```
 
-- Use curl to perform the following actions
-  - Upload a video
-    - Generate the presigned URL
-      - curl \-X GET
-        "https://API_URL/v1_0/generate-upload-link?filename=test.mp4"
-    - Upload video file
-      - curl \-X PUT \\  
-        \--upload-file test.mp4 \\  
-        \-H "Content-Type: video/mp4" \\  
-        "https://PRESIGNED_URL”
+  </TabItem>
 
-  - Search video using text
-    - curl \-X POST "https://API_URL/v1_0/search" \\
+  <TabItem label='js'>
 
-    \-F "query_type=text" \\
+```js
+const url = "https://API_URL/v1_0/search";
+const formData = new FormData();
+formData.append("query_type", "text");
+formData.append("query_text", "A red sports car driving down the highway");
 
-    \-F "query_text=defining a function"
+const response = await fetch(url, { method: "POST", body: formData });
+const data = await response.json();
+console.log(data);
+```
 
-Full API documentation is available \[here\](/api)
+  </TabItem>
+
+  <TabItem label='python'>
+
+```py
+import requests
+
+url = "https://API_URL/v1_0/search"
+response = requests.post(
+    url,
+    data={
+        "query_type": "text",
+        "query_text": "A red sports car driving down the highway",
+    },
+)
+data = response.json()
+print(data)
+```
+
+  </TabItem>
+</Tabs>
+
+Full API documentation is available [here](/api)
 
 ## Playground
 

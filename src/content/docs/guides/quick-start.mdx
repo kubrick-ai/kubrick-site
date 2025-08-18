@@ -8,6 +8,7 @@ sidebar:
 import { Steps } from "@astrojs/starlight/components";
 import { Aside } from "@astrojs/starlight/components";
 import { Image } from "astro:assets";
+import cliDemoDeploy from "@assets/cli-demo-deploy.avifs";
 import cliDemoDestroy from "@assets/cli-demo-destroy.avifs";
 
 Get Kubrick deployed to AWS in minutes using our interactive CLI tool. The CLI
@@ -99,6 +100,8 @@ Before starting, ensure you have the following installed and configured:
 
 </Steps>
 
+<Image src={cliDemoDeploy} alt='CLI Deployment Demo' width={800} height={800} />
+
 ## Testing Your Deployment
 
 Once deployment completes successfully:
@@ -147,7 +150,7 @@ Your Kubrick deployment includes:
 
 To destroy your deployment, just type `kubrick destroy`.
 
-<Image src={cliDemoDestroy} alt='cli destroy demo' width={800} height={450} />
+<Image src={cliDemoDestroy} alt='cli destroy demo' width={800} height={800} />
 
 ## Next Steps
 
@@ -160,7 +163,11 @@ To destroy your deployment, just type `kubrick destroy`.
 
 ## Need Help?
 
-- **Deployment Issues**: See the [Manual Setup](/guides/manual-setup)
-  troubleshooting section
-- **AWS Permissions**: Verify your AWS CLI configuration with
-  `aws sts get-caller-identity`
+**Deployment Issues**
+
+- See the [Manual Setup](/guides/manual-setup) troubleshooting section
+
+**AWS Permissions**
+
+- Verify your AWS CLI configuration with `aws sts get-caller-identity`
+- Authenticate your AWS CLI with `aws configure sso`
