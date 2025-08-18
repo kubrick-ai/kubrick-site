@@ -83,9 +83,9 @@ model, and Consumers handle retrieving the embedding. If the embedding is not
 yet available, the consumer Lambda simply pushes the message back into the queue
 to be retried later.
 
-The trade-off is a slight increase in code-complexity \- the consumer Lambda,
-for example, has to explicitly and idempotently manage SQS visibility timeouts
-and return pending messages to the queue.
+The trade-off is a slight increase in code-complexity - the consumer Lambda, for
+example, has to explicitly and idempotently manage SQS visibility timeouts and
+return pending messages to the queue.
 
 ### Unified Storage with RDS
 
@@ -163,9 +163,9 @@ request could easily exceed 10s.
 
 To address this, we added a read-through cache layer deployed on DynamoDB. We
 chose DynamoDB over Elasticache because the performance benefits of the latter
-(\<10ms vs \<1ms) were relatively small compared to the latency of a cache-miss
-(\>1000ms). Search request parameters are used as the cache-key, to look-up and
-store vector embeddings returned from the external embedding model.
+(`<10ms` vs `<1ms`) were relatively small compared to the latency of a
+cache-miss (`>1000ms`). Search request parameters are used as the cache-key, to
+look-up and store vector embeddings returned from the external embedding model.
 
 We found that the caching layer significantly decreased latency for repeated
 queries, helping with use cases like content recommendation where media queries
