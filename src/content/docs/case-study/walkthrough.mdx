@@ -6,6 +6,8 @@ sidebar:
 
 import ThemedDiagram from "@components/ThemedDiagram.astro";
 import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Image } from "astro:assets";
+import cliDemoDeploy from "@assets/cli-demo-deploy.avifs";
 
 ## Deployment
 
@@ -13,18 +15,12 @@ Kubrick includes a CLI tool that automates the process of setting up and
 deploying the infrastructure, meaning developers can have an ingestion pipeline
 up and running in a matter of minutes.
 
-\[cli tool demo gif\]
+```bash
+git clone https://github.com/kubrick-ai/kubrick.git && cd kubrick/cli && npm run build
+kubrick deploy
+```
 
-**Steps**:
-
-- Clone repository
-  - `git clone https://github.com/kubrick-ai/kubrick.git`
-  - `cd kubrick`
-- Deploy Infrastructure
-  - `kubrick deploy`
-- Fast forward to the CLI outputs
-  - Perhaps we can highlight the API and Playground URLs that we will be using
-    later in the walkthrough
+<Image src={cliDemoDeploy} alt='CLI Deployment Demo' width={800} height={800} />
 
 Full CLI deployment documentation is available [here](/guides/quick-start).
 
