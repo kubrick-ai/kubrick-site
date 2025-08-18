@@ -10,43 +10,39 @@ import ThemedDiagram from "@components/ThemedDiagram.astro";
 
 <ThemedDiagram src='traditional_video_search.png' alt='Traditional Video Search' />
 
-Finding specific moments inside videos has always been a challenge. Most search
-systems rely on metadata like titles, tags, or short descriptions, meaning the
-actual video content, visuals, sounds, and speech, remains invisible to the
-search engine. This forces users to manually scrub through hours of footage to
-find what they need, a slow and frustrating process.
+Finding specific moments inside videos has always been a challenge. Traditional
+search relies on exact matches on metadata like titles, tags, or short
+descriptions. This means the actual video content remains invisible to the
+search engine.
 
-Traditional search relies on exact matches. Typing “dog training” into a search
-bar will return only results containing those exact words or tags. This approach
-can miss relevant results if they’re described differently, for instance,
-“canine obedience” or “puppy learning commands”.
+For example, the query “dog training” might miss relevant results with metadata
+like “canine obedience” or “puppy learning commands”. This forces users to
+manually scrub through hours of footage to find what they need, which is slow
+and frustrating.
 
 ## Semantic Search
 
 Semantic search takes a different approach. Instead of matching words
 letter-for-letter, it uses machine learning to understand the meaning behind a
-query and find content that is conceptually similar. It analyzes the context and
-intent of the query rather than the lexical construct of the query to find
-matches that have a similar semantic meaning.
+query and find content that is conceptually similar.
 
 <ThemedDiagram src='search_comparison.png' alt='Search Comparison Diagram' />
 
 For example, if you searched for “teaching a dog to sit,” a semantic search
-system may find relevant articles titled:
+system may find relevant content titled:
 
-- Top Tips For Training Your Puppy.
-- How to Reward Dogs With Positive Reinforcement Training.
-- A Beginner’s Guide to Puppy Obedience
+- _Top Tips For Training Your Puppy._
+- _How to Reward Dogs With Positive Reinforcement Training._
+- _A Beginner’s Guide to Puppy Obedience_
 
-While these articles don’t explicitly use the terms “teaching” or “sit” in the
-titles, their semantic meaning, basic dog training, is similar to the intent of
-the query.
+While these titles don’t explicitly use the terms “teaching” or “sit”, they are
+still retrieved because they are semantically relevant to the query.
 
 Semantic search is more effective than keyword search because it is flexible
 enough to work around common pit-falls of keyword search, like differences in
 spelling (“color” vs. “colour”), differences in terminology (“doctor” vs
-"physician") and typos. Computers are able to derive this semantic understanding
-through the use of vector embeddings.
+"physician") and typos. This kind of search is enabled by a special way of
+encoding data called _vector embeddings_.
 
 ## Vector Embeddings
 
@@ -119,11 +115,11 @@ A typical RAG workflow has three core stages:
 
 The main challenge with RAG is retrieving the most relevant context from the
 knowledge base. Providing too much context can overload the model and run up
-costs, while providing too little can cause it to hallucinate. A high quality
-Knowledge Base paired with a powerful Similarity Search allows RAG pipelines to
-strike a balance by injecting only the most relevant chunks of information.
+costs, while providing too little can cause it to hallucinate. RAG pipelines
+utilizing powerful embedding models and accurate search systems can strike an
+optimal balance by injecting only the most relevant chunks of information.
 
-As LLM capabilities being to extend beyond natural language processing to
+As LLM capabilities begin to extend beyond natural language processing to
 include formats such as image, audio, and video, an opportunity to provide
 different modalities of data as context to AI prompts has arisen. However, in
 order for RAG applications to be able to search and retrieve different types of
