@@ -26,9 +26,10 @@ support.
 
 Users are also required to store their entire video library on these platforms,
 which may not be desirable for use cases where data privacy or cost minimization
-is a priority. Tight coupling with these platforms can also result in vendor
-lock-in. Given that multimodal embedding models are rapidly evolving, teams may
-prefer a more modular solution that allows for relatively easy future migration.
+is a priority. This can also result in architecture that is tightly coupled with
+these external platforms and their proprietary models. Given that multimodal
+embedding models are rapidly evolving, teams may prefer a more modular solution
+that allows for easy future migration.
 
 Given this gap in the market, we built Kubrick for teams who need more control
 over their data and architecture but don't have the resources to build a
@@ -40,16 +41,18 @@ architecture that helps teams stay future-proof and avoid vendor lock-in.
 
 Kubrick’s solution is a video ingestion and search pipeline designed for
 developers who want to enhance their applications with semantic video search
-while retaining full ownership of their video data. Its easy-to-deploy, and its
-easy-to-use API strips away the complexity of large enterprise systems by
-focusing on the core challenge: accurate and efficient retrieval of relevant
-video content. By intentionally trading off the broader feature set of a full
-video RAG platform, Kubrick remains flexible enough to adapt to a wide range of
-use cases.
+while retaining full ownership of their video data. It provides automated
+deployment to AWS via a guided CLI tool and an easy-to-use API with a playground
+for experimentation. We wanted to strip away the complexity of large enterprise
+systems by focusing on the core challenge: accurate and efficient retrieval of
+relevant video content.
 
-### Use Cases
+### Example Use Cases
 
-#### General
+By intentionally trading off the broader feature set of a full video RAG
+platform, Kubrick remains flexible enough to adapt to a wide range of use cases.
+
+#### Internal Training Videos
 
 Consider an organization with a large library of training videos looking to make
 them instantly accessible to staff on demand. Without Kubrick, they might rely
@@ -58,7 +61,7 @@ right content. With Kubrick, the organization can ensure their staff can quickly
 access the right videos when they need them through its semantic search
 capabilities.
 
-#### Security and Scalability
+#### Legal Recordings
 
 A law firm stores thousands of hours of recorded depositions, hearings, and
 compliance training sessions. Lawyers and compliance officers often need to
