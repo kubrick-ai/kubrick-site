@@ -10,5 +10,13 @@
   "arrowParens": "always",
   "endOfLine": "lf",
   "trailingComma": "es5",
-  "jsxSingleQuote": true
+  "jsxSingleQuote": true,
+  "overrides": [
+    {
+      "files": "*.mdx",
+      "options": {
+        "embeddedLanguageFormatting": "off"
+      }
+    }
+  ]
 }
