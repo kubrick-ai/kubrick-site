@@ -8,7 +8,7 @@ import ThemedDiagram from "@components/ThemedDiagram.astro";
 
 ## The Problem with Traditional Video Search
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='traditional_video_search.png' alt='Traditional Video Search' />
 
 Finding specific moments inside videos has always been a challenge. Most search
 systems rely on metadata like titles, tags, or short descriptions, meaning the
@@ -30,7 +30,7 @@ query and find content that is conceptually similar. It analyzes the context and
 intent of the query rather than the lexical construct of the query to find
 matches that have a similar semantic meaning.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='search_comparison.png' alt='Search Comparison Diagram' />
 
 For example, if you searched for “teaching a dog to sit,” a semantic search
 system may find relevant articles titled:
@@ -63,7 +63,7 @@ into dense vectors that capture the meaning of the data, not just its surface
 form. This transformation, from raw data to a meaning-rich vector, is what we
 call embedding.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='embedding_space-01.png' alt='Embedding Space Diagram #1' />
 
 In the resulting embedding space, a multi-dimensional map, items with similar
 meaning are placed closer together, while unrelated items are farther apart. For
@@ -71,7 +71,7 @@ instance, the words “queen” and “princess” may generate embeddings that 
 geometrically close, despite their differences. Conversely, “dog” and “hotdog,”
 while lexically similar, would produce distant embeddings.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='vector_embeddings_v2.png' alt='Vector Embeddings Space Diagram' />
 
 ## How Have LLMs Evolved in Recent Years?
 
@@ -108,7 +108,7 @@ becomes confused by the irrelevant information it was provided. RAG applications
 strike a balance by injecting only the most relevant chunks of information,
 using vector embeddings and similarity search.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='rag_pipeline.png' alt='RAG Pipeline Diagram' />
 
 A typical RAG workflow has three core stages:
 
@@ -127,7 +127,7 @@ Because RAG injects only the most contextually relevant information to a prompt,
 developers can reduce the chance of hallucination and have greater control of
 the costs of their AI applications.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='rag_context.png' alt='RAG Context Diagram' />
 
 As LLM’s capabilities extend beyond natural language processing to include
 formats such as image and video understanding, an opportunity to provide
@@ -144,14 +144,14 @@ text, vision models for images, speech models for audio. Multimodal models break
 this barrier by learning to represent and relate features from multiple
 modalities within a shared embedding space.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='embedding_space-02.png' alt='Embedding Space Diagram #2' />
 
 This shared embedding space allows information from different sources to be
 directly compared. For example, the sentence _“a red sports car speeding down a
 highway”_ and an image of that same car map to nearby points in the embedding
 space, even though the embeddings originate from different types of data.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='multimodal_vector_embeddings.png' alt='Multimodal Vector Embedding Space Diagram' />
 
 Multimodal embeddings are particularly important for video, because videos are
 inherently composite, combining visuals, audio, speech, and the dimension of
