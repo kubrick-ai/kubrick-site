@@ -26,13 +26,13 @@ if (!lightImage || !darkImage) {
 ---
 
 <div class="themed-diagram">
-  <div class="dark:sl-hidden" >
+  <div class="dark:sl-hidden mt-0" >
     <Zoom label={alt} >
       <Image src={lightImage} alt={alt} loading="lazy" />
     </Zoom>
   </div>
 
-  <div class="light:sl-hidden" >
+  <div class="light:sl-hidden mt-0" >
     <Zoom label={alt}>
       <Image src={darkImage} alt={alt} loading="lazy" />
     </Zoom>

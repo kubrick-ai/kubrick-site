@@ -27,14 +27,20 @@
 
     --gradient-diagram-bg: linear-gradient(
       20deg,
-      oklch(0.6818 0.1938 238.29 / 12%),
-      oklch(0.5614 0.3014 297.77 / 10%)
+      oklch(0.708 0.1888 232.53 / 16%),
+      oklch(0.5731 0.3008 309.53 / 14%)
     );
   }
 
   :root[data-theme="light"] {
     --sl-color-banner-bg: oklch(0.97 0.01 255);
     --sl-color-banner-border: oklch(0.55 0.22 263);
+
+    --gradient-diagram-bg: linear-gradient(
+      20deg,
+      oklch(0.708 0.1888 232.53 / 12%),
+      oklch(0.5731 0.3008 309.53 / 7%)
+    );
 
     --gradient-aside-tip: linear-gradient(
       20deg,
