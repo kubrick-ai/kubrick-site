@@ -46,7 +46,9 @@ For most users, the [Quick Start](/guides/quick-start) CLI guide is recommended.
 - **TwelveLabs API Key** -
   [Get your API key](https://docs.twelvelabs.io/docs/api-key)
 
-:::caution[AWS Permissions Required] Your AWS user/role needs these permissions:
+:::caution[AWS Permissions Required]
+
+Your AWS user/role needs these permissions:
 
 - `AmazonS3FullAccess`
 - `AWSLambda_FullAccess`
@@ -58,27 +60,9 @@ For most users, the [Quick Start](/guides/quick-start) CLI guide is recommended.
 - `IAMFullAccess`
 
 For production deployments, consider custom policies following the principle of
-least privilege. :::
+least privilege.
 
-## Project Structure Overview
-
-Understanding the Kubrick project structure will help with customization and
-troubleshooting:
-
-<FileTree>
-  - kubrick/ - cli/ # Command-line interface tool - src/ - package.json -
-  lambda/ # Serverless functions - src/ - api_fetch_tasks_handler/ -
-  api_fetch_videos_handler/ - api_search_handler/ -
-  api_video_upload_link_handler/ - db_bootstrap/ - s3_delete_handler/ -
-  sqs_embedding_task_consumer/ - sqs_embedding_task_producer/ - layers/ -
-  config_layer/ - embed_service_layer/ - response_utils_layer/ - s3_utils_layer/
-  - vector_database_layer/ - build-package.sh # Lambda build script -
-  playground/ # Next.js frontend - src/ - package.json - terraform/ #
-  Infrastructure as Code - modules/ - api_gateway/ - cloudfront/ - dynamodb/ -
-  iam/ - lambda/ - rds/ - s3/ - s3_notifications/ - secrets_manager/ - sqs/ -
-  vpc_network/ - main.tf - variables.tf - terraform.tfvars.example -
-  build-all-packages.sh # Build all Lambda packages - README.md
-</FileTree>
+:::
 
 ## Manual Deployment Process
 
@@ -93,17 +77,13 @@ troubleshooting:
 
 2. **Build Lambda Packages**
 
-   Build all serverless functions and layers:
+   Build the serverless functions and layers manually with
 
    ```bash
    ./lambda/build-package.sh
    ```
 
-   This script:
-   - Creates Lambda deployment packages for all functions
-   - Builds shared layers with dependencies
-   - Uses `uv pip install` for Python dependency management
-   - Ensures x86_64 Linux compatibility
+   or use your own CI/CD solution.
 
 3. **Initialize Terraform**
 
@@ -141,15 +121,18 @@ troubleshooting:
    stage_name = "v1_0"
    ```
 
-   :::tip[Variable Reference] All available variables are defined in
-   `variables.tf`:
-   - `aws_region` - AWS region for deployment (default: us-east-2)
-   - `secret_name` - Secrets Manager secret name (default: kubrick_secret)
+   :::tip[Variable Reference]
+
+   All available variables are defined in `variables.tf`:
+   - `aws_region` - AWS region for deployment (default: `us-east-2`)
+   - `secret_name` - AWS Secrets Manager secret name (default: `kubrick_secret`)
    - `db_username` - PostgreSQL username (required)
    - `db_password` - PostgreSQL password (required, sensitive)
    - `twelvelabs_api_key` - TwelveLabs API key (required, sensitive)
-   - `aws_profile` - AWS CLI profile (default: default)
-   - `stage_name` - API Gateway stage (default: v1_0) :::
+   - `aws_profile` - AWS CLI profile (default: `default`)
+   - `stage_name` - API Gateway stage (default: `v1_0`)
+
+   :::
 
 5. **Review Deployment Plan**
 
@@ -221,7 +204,7 @@ If you already have a secret named `kubrick_secret` in AWS Secrets Manager:
 4. **Verify Import**
 
    ```bash
-   terraform plan  # Should show no changes if properly configured
+   terraform plan
    ```
 
 </Steps>
@@ -233,7 +216,9 @@ If you already have a secret named `kubrick_secret` in AWS Secrets Manager:
 - **ResourceExistsException**: Follow the secret import steps above
 - **VPC/Subnet conflicts**: Ensure your AWS account doesn't have conflicting
   default VPC settings
-- **IAM role conflicts**: Check for existing roles with similar names :::
+- **IAM role conflicts**: Check for existing roles with similar names
+
+:::
 
 ## Terraform Architecture Overview
 
@@ -358,23 +343,9 @@ stage_name = "production"  # Creates /production/ endpoints
 - **Build script errors**: Ensure Python 3.13 and `uv` are installed
 - **Terraform init fails**: Check AWS credentials and region
 - **Lambda package too large**: Verify dependencies in `pyproject.toml` files
-- **RDS timeout**: Increase default timeout or check VPC configuration :::
+- **RDS timeout**: Increase default timeout or check VPC configuration
 
-### Debug Commands
-
-```bash
-# Check AWS credentials
-aws sts get-caller-identity
-
-# Verify Terraform state
-terraform show
-
-# Lambda function logs
-aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/kubrick"
-
-# API Gateway logs
-aws logs describe-log-groups --log-group-name-prefix "API-Gateway-Execution-Logs"
-```
+:::
 
 ### State Management
 
@@ -393,8 +364,12 @@ terraform state rm aws_s3_bucket.example
 
 ### Destroying Infrastructure
 
-:::danger[Data Loss Warning] This will permanently delete all data including
-uploaded videos and database contents. :::
+:::danger[Data Loss Warning]
+
+This will permanently delete all data including uploaded videos and database
+contents.
+
+:::
 
 ```bash
 terraform destroy
@@ -405,21 +380,12 @@ terraform destroy
 Remove specific resources:
 
 ```bash
-# Remove CloudFront (takes 15+ minutes)
+# Remove CloudFront
 terraform destroy -target=module.cloudfront
 
-# Remove RDS (with final snapshot)
+# Remove RDS
 terraform destroy -target=module.rds
 ```
-
-### Cost Optimization
-
-Monitor AWS costs and consider:
-
-- RDS instance sizing
-- CloudFront usage patterns
-- Lambda memory allocation
-- S3 storage classes for video archives
 
 ## Advanced Configuration
 
@@ -440,8 +406,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-      - name: Build Lambda packages
-        run: ./lambda/build-package.sh
       - name: Terraform Deploy
         run: |
           cd terraform
@@ -465,9 +429,25 @@ terraform apply -var-file="dev.tfvars"
 terraform apply -var-file="prod.tfvars"
 ```
 
-## Next Steps
+## IaC File Structure
 
-- **API Integration**: Explore the [API Reference](/api/reference)
-- **Architecture Details**: Read the [Case Study](/case-study/intro)
-- **CLI Tool**: Try the [Quick Start](/guides/quick-start) for simpler
-  deployments
+<FileTree>
+- kubrick/
+  - ...
+  - terraform/
+    - modules/
+      - api_gateway/
+      - cloudfront/
+      - dynamodb/
+      - iam/
+      - lambda/
+      - rds/
+      - s3/
+      - s3_notifications/
+      - secrets_manager/
+      - sqs/
+      - vpc_network/
+    - main.tf
+    - variables.tf
+    - terraform.tfvars.example
+</FileTree>
