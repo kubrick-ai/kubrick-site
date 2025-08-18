@@ -23,6 +23,10 @@ through this process in detail.
 The ingestion process begins when a user uploads a video to a private Amazon S3
 bucket. This can be done through two main paths:
 
+- **Direct to S3:** Videos can also be uploaded directly to the S3 bucket using
+  the AWS Console or other S3 compatible integrations. External access to items
+  in the bucket is always managed by generating temporary presigned URLs.
+
 - **Via the API:** The Kubrick API provides an endpoint that returns a temporary
   presigned URL for uploads. When the endpoint is called, the Upload Link
   Generator Lambda generates a presigned URL, which allows the client to
@@ -31,18 +35,14 @@ bucket. This can be done through two main paths:
   both security and ease of transfer. This method also bypasses the AWS API
   Gateway’s 10 MB payload limit for direct uploads.
 
-- **Direct to S3:** Videos can also be uploaded directly to the S3 bucket using
-  the AWS Console or other S3 compatible integrations. External access to items
-  in the bucket is always managed by generating temporary presigned URLs.
+### Embedding Generation
+
+<ThemedDiagram src='embedding_generation.png' alt='Embedding Generation Diagram' />
 
 ##### Step 2. Storage → Embedding Task Producer
 
 Once the video is in S3, the bucket emits an event that triggers the Embedding
 Task Producer Lambda.
-
-### Embedding Generation
-
-<ThemedDiagram src='embedding_generation.png' alt='Embedding Generation Diagram' />
 
 ##### Step 3. Embedding Task Producer ⭤ Embedding Model
 

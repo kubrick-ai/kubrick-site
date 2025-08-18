@@ -40,11 +40,11 @@ attention turned to architecture, we didn’t want to design a system that was
 tightly coupled to the model; swapping should require minimal updates instead of
 an entire rewrite.
 
-Our first working prototype was a monolithic local Flask app, which provedthe
-concept and helped us identify how we could separate concerns in future
-iterations. For production,we chose serverless architecture as it separates
+Our first working prototype was a monolithic local Flask app, which was a proof
+of concept and helped us identify how we could separate concerns in future
+iterations. For production, we chose a serverless architecture as it separates
 concerns and scales to match usage. The ingestion and search pipelines both use
-event-driven workers, with embedding requests flowing through producer/consumer
+event-driven workers, with embedding requests flowing through both producer and consumer
 functions so the model stays isolated. Additionally, this approach is more
 cost-efficient as end users wouldn’t incur idle infrastructure costs.
 
@@ -136,14 +136,14 @@ latency.
 
 #### Optimizing the Database
 
+<ThemedDiagram src='approximate_nearest_neighbor.png' alt='Approximate Nearest Neighbor Diagram' />
+
 By default, `pgvector` performs exact nearest neighbor search, which returns
 perfectly accurate results. However, this algorithm scales poorly because it
 compares the query embedding with each embedding in the database table. Because
 we wanted to ensure that Kubrick’s search remained fast at scale, we decided to
 switch to Approximate Nearest Neighbour (ANN) search using the Hierarchical
 Navigable Small World (HNSW) algorithm.
-
-<ThemedDiagram src='approximate_nearest_neighbor.png' alt='Approximate Nearest Neighbor Diagram' />
 
 This means that instead of comparing our query with each embedding in the
 database, we now maintain a graph (as a PSQL index) that our algorithm traverses
