@@ -16,7 +16,7 @@ through this process in detail.
 
 ### Video Upload
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='video_upload.png' alt='Video Upload Diagram' />
 
 ##### Step 1. User → Storage
 
@@ -42,7 +42,7 @@ Task Producer Lambda.
 
 ### Embedding Generation
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='embedding_generation.png' alt='Embedding Generation Diagram' />
 
 ##### Step 3. Embedding Task Producer ⭤ Embedding Model
 
@@ -73,7 +73,7 @@ completion or failure.
 
 ### Database Persistence
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='database_persistence.png' alt='Database Persistence Diagram' />
 
 ##### Step 6. SQS ⭤ Embedding Task Consumer
 
@@ -106,7 +106,7 @@ segments. The following steps describe this process in detail.
 
 ### Processing the Query
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='processing_the_query.png' alt='Processing The Query Diagram' />
 
 ##### Step 1. User ⭤ API Gateway
 
@@ -136,7 +136,7 @@ into an object containing query type, filters, and similarity thresholds
 
 ### Retrieving Results
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='retrieving_results.png' alt='Retrieving Results Diagram' />
 
 ##### Step 3. Search Handler Lambda ⭤ Embedding Model/Cache
 
@@ -158,6 +158,8 @@ to the video. These URLs, along with the corresponding metadata, are assembled
 into a structured JSON response and returned to the client.
 
 ## Review - Full Architecture
+
+<ThemedDiagram src='simplified_architecture.png' alt='Full Architecture Diagram' />
 
 With the ingestion and search pipelines detailed above, the full architecture
 brings together all components into a cohesive workflow. The following diagram

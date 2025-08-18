@@ -8,7 +8,7 @@ import ThemedDiagram from "@components/ThemedDiagram.astro";
 
 ### Deciding On a Model
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='embedding_model_comparison.png' alt='Embedding Model Comparison Chart' />
 
 Embeddings are the central mechanism for similarity search, so finding a
 suitable embedding model was essential. We originally started with
@@ -75,7 +75,7 @@ provisioning, managing, and polling a separate service. In the end, we landed on
 Amazon SQS as the simplest solution, since it is managed, scales well, and
 integrates natively with AWS Lambda functions.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='kubrick_sqs.png' alt='Kubrick SQS Diagram' />
 
 The queue acts as a buffer for in-progress embedding jobs, preventing idle and
 long-running Lambdas. Producers handle delivering the video to the embedding
@@ -101,7 +101,7 @@ embedding tasks (`tasks`). Ingestion and search queries would then have to
 manage and synchronise data across two separate databases, increasing latency
 and adding points of failure.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='database_schema.png' alt='Database Schema Chart' />
 
 To avoid this, we decided to use PostgreSQL RDS with `pgvector`. This gives us
 both vector search and relational queries in one schema, supporting atomic
@@ -143,7 +143,7 @@ we wanted to ensure that Kubrick’s search remained fast at scale, we decided t
 switch to Approximate Nearest Neighbour (ANN) search using the Hierarchical
 Navigable Small World (HNSW) algorithm.
 
-<ThemedDiagram src='simplified_architecture.png' alt='Kubrick Search' />
+<ThemedDiagram src='approximate_nearest_neighbor.png' alt='Approximate Nearest Neighbor Diagram' />
 
 This means that instead of comparing our query with each embedding in the
 database, we now maintain a graph (as a PSQL index) that our algorithm traverses
