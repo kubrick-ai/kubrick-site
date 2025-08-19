@@ -46,6 +46,10 @@
     line-height: inherit;
   }
 
+  .footnotes {
+    font-size: 0.85rem;
+  }
+
   h1:has(+ div.markdown-wrapper) {
     background: var(--gradient-heading-primary);
     background-clip: text;
