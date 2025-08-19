@@ -20,10 +20,13 @@ hero:
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
-import ContainerSection from "../../components/ContainerSection.astro";
-import LinkedCard from "../../components/LinkedCard.astro";
-import LinkedCardGroup from "../../components/LinkedCardGroup.astro";
-import Sidekick from "../../components/Sidekick.astro";
+import ContainerSection from "@components/ContainerSection.astro";
+import LinkedCard from "@components/LinkedCard.astro";
+import LinkedCardGroup from "@components/LinkedCardGroup.astro";
+import Sidekick from "@components/Sidekick.astro";
+import searchTextDemo from "@assets/demos/landing/search-text.avifs";
+import searchImageDemo from "@assets/demos/landing/search-image.avifs";
+import ingestionDemo from "@assets/demos/landing/ingestion.avifs";
 
 <div class="px-18 max-w-7xl mx-auto">
 
@@ -40,18 +43,18 @@ never spoken.
   <Sidekick
     title='Semantic Video Search'
     description='Search by concepts and context, not just keywords. Find moments based on meaning and intent.'
-    image='/src/assets/demos/landing/search-text.avifs'
+    image={searchTextDemo}
   />
   <Sidekick
     title='Beyond Text Search'
     description='Retrieve results using image, audio, or video media queries'
-    image='/src/assets/demos/landing/search-image.avifs'
+    image={searchImageDemo}
     reversed={true}
   />
   <Sidekick
     title='Automated Ingestion Pipeline'
     description='Upload using the API, or add videos to your S3 bucket through an external integration. The pipeline takes care of the rest.'
-    image='/src/assets/demos/landing/ingestion.avifs'
+    image={ingestionDemo}
   />
 </section>
 
