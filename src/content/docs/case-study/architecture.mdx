@@ -17,7 +17,7 @@ video upload, embedding generation, and database persistence.
 
 <ThemedDiagram src='video_upload.png' alt='Video Upload Diagram' />
 
-##### Step 1. Client → Storage
+**Step 1. Client → Storage**
 
 The ingestion process begins when the client uploads a video to a private Amazon
 S3 bucket. This can be done through two main paths:
@@ -32,16 +32,16 @@ S3 bucket. This can be done through two main paths:
 - **Direct to S3:** Videos can also be uploaded directly to the S3 bucket using
   the AWS Console or other S3 compatible integrations.
 
-##### Step 2. Storage → Embedding Task Producer
-
-Once the video is in S3, the bucket emits an event that triggers the Embedding
-Task Producer Lambda.
-
 ### Embedding Generation
 
 <ThemedDiagram src='embedding_generation.png' alt='Embedding Generation Diagram' />
 
-##### Step 3. Embedding Task Producer ⭤ Embedding Model
+**Step 2. Storage → Embedding Task Producer**
+
+Once the video is in S3, the bucket emits an event that triggers the Embedding
+Task Producer Lambda.
+
+**Step 3. Embedding Task Producer ⭤ Embedding Model**
 
 The Producer Lambda performs initial validation to ensure the object is a valid
 video. It then generates a presigned URL to give the embedding model temporary
@@ -51,13 +51,13 @@ The Lambda then sends this URL in an embedding request to the embedding model’
 API. The embedding model creates a job for that embedding request and respond
 with a job ID.
 
-##### Step 4. Embedding Task Producer → SQS
+**Step 4. Embedding Task Producer → SQS**
 
 Next, the Lambda publishes a message to an SQS queue. This message contains the
 job ID, which will be used to query the status of the embedding job as well as
 for retrieving the embedding when it is ready.
 
-##### Step 5. Embedding Task Producer → Database
+**Step 5. Embedding Task Producer → Database**
 
 The Lambda also records a new “embedding task” in the database with the status
 `processing`. This allows the client to track embedding progress and handle
@@ -72,14 +72,14 @@ application logs and in the `tasks` database table.
 
 <ThemedDiagram src='database_persistence.png' alt='Database Persistence Diagram' />
 
-##### Step 6. SQS ⭤ Embedding Task Consumer
+**Step 6. SQS ⭤ Embedding Task Consumer**
 
 When a message is placed in the queue, SQS triggers the Embedding Task Consumer
 Lambda, which begins polling the embedding model for the job’s status. If the
 job is still processing, the message will be re-queued with a short visibility
 timeout so the Consumer Lambda can check again later.
 
-##### Step 7. Embedding Task Consumer ⭤ Embedding Model
+**Step 7. Embedding Task Consumer ⭤ Embedding Model**
 
 The Lambda checks the job status:
 
@@ -89,7 +89,7 @@ The Lambda checks the job status:
 - If the status is **Ready**, the embeddings and metadata are retrieved from the
   model.
 
-##### Step 8. Embedding Task Consumer → Database
+**Step 8. Embedding Task Consumer → Database**
 
 When embeddings are ready, the Lambda stores them alongside the video’s metadata
 in the database. The embedding task record is then updated to `completed`,
@@ -105,7 +105,7 @@ segments. The following steps describe this process in detail.
 
 <ThemedDiagram src='processing_the_query.png' alt='Processing The Query Diagram' />
 
-##### Step 1. Client ⭤ API Gateway
+**Step 1. Client ⭤ API Gateway**
 
 The search process begins when the client sends a request to the `/search`
 endpoint. The Kubrick Search API supports multiple query types:
@@ -126,7 +126,7 @@ avoiding temporary S3 storage. Larger files can be sent via URL.
 Read more about the `/search` endpoint in our
 [API documentation](/api/operations/search)
 
-##### Step 2. API Gateway ⭤ Search Handler Lambda
+**Step 2. API Gateway ⭤ Search Handler Lambda**
 
 Once the request reaches the Search Handler Lambda, it is validated and parsed
 into an object containing query type, filters, and similarity thresholds
@@ -135,7 +135,7 @@ into an object containing query type, filters, and similarity thresholds
 
 <ThemedDiagram src='retrieving_results.png' alt='Retrieving Results Diagram' />
 
-##### Step 3. Search Handler Lambda ⭤ Embedding Model/Cache
+**Step 3. Search Handler Lambda ⭤ Embedding Model/Cache**
 
 Before embedding the query, the Lambda checks the cache to avoid redundant
 embedding model calls. On **cache hit**, the embeddings are retrieved directly
@@ -143,7 +143,7 @@ from the DynamoDB-backed cache. On **cache miss**, the Lambda sends the query to
 the embedding model. Unlike with video ingestion, this call is synchronous. The
 Lambda receives the embeddings, then stores them in DynamoDB.
 
-##### Step 4. Search Handler Lambda ⭤ Database
+**Step 4. Search Handler Lambda ⭤ Database**
 
 The Lambda performs a semantic search using Approximate Nearest Neighbor (ANN)
 search with cosine similarity against stored embeddings in RDS. Filters such as
