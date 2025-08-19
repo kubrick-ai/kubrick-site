@@ -18,9 +18,9 @@
     -moz-tab-size: 4;
     -o-tab-size: 4;
     tab-size: 4;
-    font-family: var(--sl-font), ui-sans-serif, system-ui, sans-serif,
-      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-      "Noto Color Emoji";
+    font-family:
+      var(--sl-font), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-feature-settings: normal;
     font-variation-settings: normal;
     -webkit-tap-highlight-color: transparent;
@@ -30,9 +30,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    font-family: var(--sl-font), ui-sans-serif, system-ui, sans-serif,
-      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-      "Noto Color Emoji";
+    font-family:
+      var(--sl-font), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
     background-color: var(--background);
     min-height: 100svh;
@@ -53,7 +53,10 @@
     color: transparent;
   }
 
-  .sl-markdown-content h2, h3, h4, h5 {
+  .sl-markdown-content h2,
+  h3,
+  h4,
+  h5 {
     background: var(--gradient-heading-secondary);
     background-clip: text;
     -webkit-background-clip: text;
@@ -147,8 +150,8 @@
     align-items: center;
     background-color: transparent;
     border: none;
-    transition-property: color, background-color, border-color,
-      text-decoration-color, fill, stroke;
+    transition-property:
+      color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 0.15s;
     font-weight: 500;
@@ -210,7 +213,7 @@
   .sl-markdown-content h3:not(:where(.not-content *)) {
     letter-spacing: -0.025em;
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     line-height: 2rem;
     scroll-margin: 5rem;
     margin: 0;
@@ -219,7 +222,7 @@
   .sl-markdown-content h4:not(:where(.not-content *)) {
     letter-spacing: -0.025em;
     font-weight: 600;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     line-height: 1.75rem;
     scroll-margin: 5rem;
     margin: 0;
