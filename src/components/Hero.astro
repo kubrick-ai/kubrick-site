@@ -31,7 +31,7 @@ if (image) {
 ---
 
 <section class="hero-container min-h-dvh w-full pb-20 flex items-center justify-center relative">
-  <div class="max-w-6xl w-full px-24 flex flex-col md:flex-row items-center gap-4 md:gap-16 relative z-10">
+  <div class="max-w-6xl w-full px-12 flex flex-col md:flex-row items-center gap-4 md:gap-16 relative z-10">
     <div class="flex justify-center md:order-2 flex-1 order-1">
       {darkImage && <Image src={darkImage} {...imageAttrs} class:list={[{ 'light:sl-hidden': Boolean(lightImage) }, "w-48 h-48 md:w-80 md:h-80 object-contain"]} />}
       {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden w-48 h-48 md:w-80 md:h-80 object-contain" />}
