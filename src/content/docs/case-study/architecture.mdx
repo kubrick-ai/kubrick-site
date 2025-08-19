@@ -22,6 +22,10 @@ video upload, embedding generation, and database persistence.
 The ingestion process begins when the client uploads a video to a private Amazon
 S3 bucket. This can be done through two main paths:
 
+- **Direct to S3:** Videos can also be uploaded directly to the S3 bucket using
+  the AWS Console or other S3 compatible integrations. External access to items
+  in the bucket is always managed by generating temporary presigned URLs.
+
 - **Via the API:** The Kubrick API provides an endpoint that returns a temporary
   presigned URL for uploads. When the endpoint is called, the Upload Link
   Generator Lambda generates a presigned URL, which gives the client temporary
