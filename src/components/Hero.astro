@@ -76,7 +76,8 @@ if (image) {
   to { transform: translate(-50%, -50%) rotate(360deg); }
  }
 
- .rotating-bg {
+.rotating-bg {
+  position: fixed;
   animation: rotate 10s linear infinite;
   transform-origin: center;
   width: max(141.42vw, 141.42vh);
