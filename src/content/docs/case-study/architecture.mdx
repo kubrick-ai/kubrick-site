@@ -33,9 +33,6 @@ S3 bucket. This can be done through two main paths:
   support uploading videos larger than the AWS API Gateway's 10 MB payload
   limit.
 
-- **Direct to S3:** Videos can also be uploaded directly to the S3 bucket using
-  the AWS Console or other S3 compatible integrations.
-
 ### Embedding Generation
 
 <ThemedDiagram src='embedding_generation.png' alt='Embedding Generation Diagram' />
@@ -64,10 +61,10 @@ for retrieving the embedding when it is ready.
 **Step 5. Embedding Task Producer → Database**
 
 The Lambda also records a new “embedding task” in the database with the status
-`processing`. This allows the client to track embedding progress and handle
-errors. Since generating an embedding is an asynchronous process handled by an
-external service, we track the status of each job in the database until
-completion or failure.
+`processing`. Since generating an embedding is an asynchronous process handled
+by an external service, Kubrick tracks the status of each job in the database
+until completion or failure - allowing the client to monitor the progress of
+their embeddings.
 
 Structured error handling ensures that any ingestion failures are logged both in
 application logs and in the `tasks` database table.
@@ -111,8 +108,7 @@ segments. The following steps describe this process in detail.
 
 **Step 1. Client ⭤ API Gateway**
 
-The search process begins when the client sends a request to the `/search`
-endpoint. The Kubrick Search API supports multiple query types:
+The Kubrick Search API supports multiple query types:
 
 | Query Type | Input Method       | Limitations    |
 | ---------- | ------------------ | -------------- |
@@ -123,9 +119,8 @@ endpoint. The Kubrick Search API supports multiple query types:
 
 [^1]: Limitation of Marengo 2.7
 
-Requests are sent via a `multipart/form-data` POST request. If files are
-uploaded directly, they are processed in-memory by the Search Handler Lambda,
-avoiding temporary S3 storage. Larger files can be sent via URL.
+If files are uploaded directly, they are processed in-memory by the Search
+Handler Lambda, avoiding temporary S3 storage. Larger files can be sent via URL.
 
 Read more about the `/search` endpoint in our
 [API documentation](/api/operations/search)
@@ -149,7 +144,8 @@ Lambda receives the embeddings, then stores them in DynamoDB.
 
 **Step 4. Search Handler Lambda ⭤ Database**
 
-The Lambda performs a semantic search using Approximate Nearest Neighbor (ANN)
+The Lambda performs a semantic search using
+[Approximate Nearest Neighbor (ANN)](/case-study/challenges-design-decisions/#optimizing-the-database)
 search with cosine similarity against stored embeddings in RDS. Filters such as
 modality and minimum similarity score are applied, and the top _n_ results are
 retrieved.

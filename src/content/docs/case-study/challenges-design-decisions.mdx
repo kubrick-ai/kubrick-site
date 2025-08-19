@@ -26,11 +26,17 @@ introducing complexity in deployment, since we would need to manage the model
 weights and GPU compute ourselves.
 
 We then evaluated Google’s `multimodalembedding@001` and TwelveLabs’
-`marengo 2.7`. Beyond supporting longer text queries, `marengo 2.7`'s key
+`Marengo 2.7`. Beyond supporting longer text queries, `Marengo 2.7`'s key
 advantage was native audio embedding support. This was crucial because we wanted
 to handle audio through embeddings rather than transcriptions. Without native
 audio support, we would have needed a separate audio embedding model and
 parallel ingestion pipelines.
+
+The trade-off with `Marengo 2.7` is that TwelveLabs only provides an
+asynchronous API for video embeddings. They do not yet provide a webhook for
+completed embeddings, so users must poll repeatedly to check whether their
+embeddings are completed, which can be inefficient. We found these trade-offs
+acceptable and we discuss how we dealt with them below.
 
 ### Adopting Serverless
 
@@ -44,23 +50,25 @@ Our first working prototype was a monolithic local Flask app, which was a proof
 of concept and helped us identify how we could separate concerns in future
 iterations. For production, we chose a serverless architecture as it separates
 concerns and scales to match usage. The ingestion and search pipelines both use
-event-driven workers, with embedding requests flowing through both producer and consumer
-functions so the model stays isolated. Additionally, this approach is more
-cost-efficient as end users wouldn’t incur idle infrastructure costs.
+event-driven workers, with embedding requests flowing through both producer and
+consumer functions so the model stays isolated. Additionally, this approach is
+more cost-efficient as end users wouldn’t incur idle infrastructure costs.
 
 However, serverless came with trade-offs. Beyond cold start latency, we faced
 execution time limits, memory constraints, and reduced debugging visibility
 compared to long-running instances. We also needed to handle cases where
 embedding tasks might exceed function timeouts. These trade-offs were acceptable
-for our use-case, and we discuss some of our solutions in the following section.
+for the type of applications we were targeting, and we discuss some of our
+solutions in the following section.
 
 ### Asynchronous Processing with SQS
 
 One issue with embedding video is that it is much slower than embedding text or
-a single image. TwelveLabs handles this by providing a separate asynchronous API
-for video embeddings, but they do not provide a notification mechanism through
-something like a webhook. This was not an issue on our local server prototype,
-since we could just poll the TwelveLabs API until the embedding was ready.
+a single image. As mentioned above, TwelveLabs handles this by providing a
+separate asynchronous API for video embeddings, but they do not provide a
+notification mechanism through something like a webhook. This was not an issue
+on our local server prototype, since we could just poll the TwelveLabs API until
+the embedding was ready.
 
 However, as we migrated to a serverless architecture, we realised that having
 one Lambda function handle the entire embedding process was problematic. Keeping
@@ -100,8 +108,6 @@ handle our other non-vector data like video metadata (`videos`) and our
 embedding tasks (`tasks`). Ingestion and search queries would then have to
 manage and synchronise data across two separate databases, increasing latency
 and adding points of failure.
-
-<ThemedDiagram src='database_schema.png' alt='Database Schema Chart' />
 
 To avoid this, we decided to use PostgreSQL RDS with `pgvector`. This gives us
 both vector search and relational queries in one schema, supporting atomic
