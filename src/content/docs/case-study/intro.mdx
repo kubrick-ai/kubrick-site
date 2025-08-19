@@ -6,8 +6,9 @@ sidebar:
 
 import ThemedDiagram from "@components/ThemedDiagram.astro";
 
-Kubrick lets you search video using natural language, images, audio, or other
-video clips, returning the exact moments that are most relevant.
+Kubrick is an open-source end-to-end ingestion pipeline and API for video
+semantic search. It allows users to search video using natural language, images,
+audio, or other video clips, returning the exact moments that are most relevant.
 
 As video libraries grow across domains like sports, education, security, and
 marketing, finding a specific moment becomes tedious. Scrubbing through
@@ -21,10 +22,9 @@ existing infrastructure.
 
 <ThemedDiagram src='kubrick_search.png' alt='Kubrick Search' />
 
-Kubrick solves this by providing an open-source end-to-end ingestion pipeline
-and API for video semantic search. The pipeline automatically generates vector
-embeddings from ingested video and stores them in a vector database. The API
-allows users to search the database and interact with the pipeline. Its modular,
-serverless architecture can be deployed directly into an AWS environment, giving
-teams full ownership of their data while remaining flexible enough to integrate
-new embedding models in the future.
+Kubrick's pipeline automatically generates vector embeddings from ingested video
+and stores them in a vector database. The API allows users to search the
+database and interact with the pipeline. Its modular, serverless architecture
+can be deployed directly into an AWS environment, giving teams full ownership of
+their data while remaining flexible enough to integrate new embedding models in
+the future.

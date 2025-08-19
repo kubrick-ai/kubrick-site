@@ -47,7 +47,7 @@ curl -X POST https://API_URL/v1_0/search
 
   <TabItem label='js'>
 
-```js
+```js {7}
 const url = "https://API_URL/v1_0/search";
 const formData = new FormData();
 formData.append("query_type", "text");
@@ -55,14 +55,13 @@ formData.append("query_text", "A red sports car driving down the highway");
 
 const response = await fetch(url, { method: "POST", body: formData });
 const data = await response.json();
-console.log(data);
 ```
 
   </TabItem>
 
   <TabItem label='python'>
 
-```py
+```py {11}
 import requests
 
 url = "https://API_URL/v1_0/search"
@@ -74,7 +73,6 @@ response = requests.post(
     },
 )
 data = response.json()
-print(data)
 ```
 
   </TabItem>
