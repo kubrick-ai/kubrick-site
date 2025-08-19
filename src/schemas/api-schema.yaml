@@ -219,8 +219,12 @@ paths:
                 filter:
                   type: string
                   description: |
-                    Optional filter expression to narrow search results.
-                    Examples: "duration > 30", "metadata.genre = 'comedy'".
+                    Optional JSON string to filter search results.
+                  example:
+                    {
+                      scope: ["video", "clip"],
+                      modality: ["visual-text", "audio"],
+                    }
                 min_similarity:
                   type: number
                   description:

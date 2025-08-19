@@ -10,127 +10,118 @@ import ThemedDiagram from "@components/ThemedDiagram.astro";
 
 <ThemedDiagram src='traditional_video_search.png' alt='Traditional Video Search' />
 
-Finding specific moments inside videos has always been a challenge. Most search
-systems rely on metadata like titles, tags, or short descriptions, meaning the
-actual video content, visuals, sounds, and speech, remains invisible to the
-search engine. This forces people to manually scrub through hours of footage to
-find what they need, a slow and frustrating process.
+Finding specific moments inside videos has always been a challenge. Traditional
+search relies on exact matches on metadata like titles, tags, or short
+descriptions. This means the actual video content remains invisible to the
+search engine.
 
-Traditional search relies on exact matches. If you type “dog training” into a
-search bar, it will return only results containing those exact words or tags.
-While useful for some cases, this approach can miss relevant results if they’re
-described differently, for instance, “canine obedience” or “puppy learning
-commands”.
+For example, the query “dog training” might miss relevant results with metadata
+like “canine obedience” or “puppy learning commands”. This forces users to
+manually scrub through hours of footage to find what they need, which is slow
+and frustrating.
 
 ## Semantic Search
 
 Semantic search takes a different approach. Instead of matching words
 letter-for-letter, it uses machine learning to understand the meaning behind a
-query and find content that is conceptually similar. It analyzes the context and
-intent of the query rather than the lexical construct of the query to find
-matches that have a similar semantic meaning.
+query and find content that is conceptually similar.
 
 <ThemedDiagram src='search_comparison.png' alt='Search Comparison Diagram' />
 
 For example, if you searched for “teaching a dog to sit,” a semantic search
-system may find relevant articles titled:
+system may find relevant content titled:
 
-- Top Tips For Training Your Puppy.
-- How to Reward Dogs With Positive Reinforcement Training.
-- A Beginner’s Guide to Puppy Obedience
+- _Top Tips For Training Your Puppy._
+- _How to Reward Dogs With Positive Reinforcement Training._
+- _A Beginner’s Guide to Puppy Obedience_
 
-While these articles don’t explicitly use the terms “teaching” or “sit” in the
-titles, their semantic meaning, basic dog training, is similar to the intent of
-the query.
+While these titles don’t explicitly use the terms “teaching” or “sit”, they are
+still retrieved because they are semantically relevant to the query.
 
 Semantic search is more effective than keyword search because it is flexible
 enough to work around common pit-falls of keyword search, like differences in
 spelling (“color” vs. “colour”), differences in terminology (“doctor” vs
-"physician") and typos. Computers are able to derive this semantic understanding
-through the use of vector embeddings.
+"physician") and typos. This kind of search is enabled by a special way of
+encoding data called _vector embeddings_.
 
 ## Vector Embeddings
 
-A vector embedding is a numerical representation of data, essentially a “list”
-of numbers where each position captures a specific learned feature of that data.
-Since computers can’t understand images, sounds, or text in their raw form the
-way humans do, they rely on these numerical representations to process and
-compare them.
-
-Embedding models are machine learning systems trained on massive datasets to
-learn patterns and relationships in language. These models transform raw inputs
-into dense vectors that capture the meaning of the data, not just its surface
-form. This transformation, from raw data to a meaning-rich vector, is what we
-call an embedding.
-
 <ThemedDiagram src='embedding_space-01.png' alt='Embedding Space Diagram #1' />
 
-In the resulting embedding space, a multi-dimensional map, items with similar
-meaning are placed closer together, while unrelated items are farther apart. For
-instance, the words “queen” and “princess” may generate embeddings that are
-geometrically close, despite their differences. Conversely, “dog” and “hotdog,”
-while lexically similar, would produce distant embeddings.
+A vector embedding is a numerical representation of data within a continuous
+embedding space. We can think of this representation as a high-dimensional array
+of floating point numbers, where each dimension corresponds to a meaningful
+feature of that data. By converting raw, unstructured data into a structured
+numerical format, these vectors allow computers to process and perform
+mathematical operations to measure the similarity between different data
+points.[^1]
+
+Embedding models are machine learning models trained to take unstructured data
+and produce these vector embeddings. During training, these models learn to
+arrange related concepts closer to each other in the vector space, so that the
+resulting vectors capture the semantic _meaning_ of the original data. This
+transformation, from raw data to a meaning-rich vector, is what we call
+embedding.
 
 <ThemedDiagram src='vector_embeddings_v2.png' alt='Vector Embeddings Space Diagram' />
 
-## How Have LLMs Evolved in Recent Years?
+In the resulting multi-dimensional embedding space, items with similar meaning
+like “queen” and “princess” are placed closer together. Conversely, unrelated
+items like “dog” and “hotdog,” while lexically similar, are placed farther
+apart.
+
+## Recent Advancements in AI
 
 Over the last few years, large language models (LLMs) like OpenAI’s GPT or
 Anthropic’s Claude have opened the door to a new class of intelligent
 applications, from autonomous agents to context-aware copilots and
 conversational interfaces.
 
-App developers are increasingly building AI agents that rely on LLMs to perform
-tasks, make decisions, and interface with other systems. These agents can be
-highly capable, but LLMs also come with their own set of tradeoffs that product
-teams must design around.
+App developers are increasingly building AI agents and applications that rely on
+LLMs to perform tasks, make decisions, and interface with other systems. These
+systems can be highly capable, but LLMs also come with their own set of
+tradeoffs that product teams must design around.
 
 A common challenge is the fact that LLMs are trained on static snapshots of
 internet-scale data. This means they lack up-to-date or domain-specific
 knowledge, especially critical in enterprise settings where internal documents,
 proprietary systems, or real-time events are essential to effective
-decision-making.
-
-This shortfall of LLMs has given rise to a new category of software known as RAG
-applications that supplement LLM prompts with additional knowledge sources at
-query time to generate more accurate, up-to-date, and domain-specific responses.
+decision-making.[^2]
 
 ## What is RAG?
 
-Retrieval-Augmented Generation (RAG) is a method for enhancing LLM performance
-by injecting contextually relevant information into a prompt, leading to
-responses that are more accurate and precise.
-
-Often, an LLM will only need segments of a larger piece of content to provide an
-accurate response to a query. In these instances providing the entire article as
-context can be both expensive and lead to inaccurate responses as the model
-becomes confused by the irrelevant information it was provided. RAG applications
-strike a balance by injecting only the most relevant chunks of information,
-using vector embeddings and similarity search.
+Recently, Retrieval-Augmented Generation (RAG) has grown popular as a solution
+to this problem. RAG works by injecting contextually relevant information into
+user prompts before they are sent to the LLM. This allows the LLM to generate
+more accurate, up-to-date, and domain-specific responses, as well as avoid
+hallucination.
 
 <ThemedDiagram src='rag_pipeline.png' alt='RAG Pipeline Diagram' />
 
 A typical RAG workflow has three core stages:
 
 1. **Knowledge Base**: Source material (e.g., documents, transcripts, images, or
-   videos) is transformed into vector embeddings using an embedding model.
+   videos) is chunked and transformed into vector embeddings using an embedding
+   model.
 
-2. **Similarity Search:** At query time, the question is embedded into the same
-   space. A vector search retrieves the stored embeddings most semantically
-   similar to the query.
+2. **Similarity Search:** At query time, the user's prompt is embedded into the
+   same vector space. A vector search finds the stored embeddings most
+   semantically similar to the query and retrieves the relevant chunks.
 
-3. **Context Injection**: Retrieved content is inserted into the LLM’s prompt,
-   giving it targeted, context-rich information to reason with before generating
-   its response.
-
-Because RAG injects only the most contextually relevant information to a prompt,
-developers can reduce the chance of hallucination and have greater control of
-the costs of their AI applications.
+3. **Context Injection**: The retrieved chunks of source material are injected
+   into the user's prompt, giving the LLM targeted, context-rich information to
+   reason with before generating its response.
 
 <ThemedDiagram src='rag_context.png' alt='RAG Context Diagram' />
 
-As LLM’s capabilities extend beyond natural language processing to include
-formats such as image and video understanding, an opportunity to provide
+The main challenge with RAG is retrieving the most relevant context from the
+knowledge base. Providing too much context can overload the model and run up
+costs, while providing too little can cause it to hallucinate. RAG pipelines
+utilizing powerful embedding models and accurate search systems can strike an
+optimal balance by injecting only the most relevant chunks of information.
+
+As LLM capabilities begin to extend beyond natural language processing to
+include formats such as image, audio, and video, an opportunity to provide
 different modalities of data as context to AI prompts has arisen. However, in
 order for RAG applications to be able to search and retrieve different types of
 data for context injection, they need to make use of more versatile multimodal
@@ -174,3 +165,9 @@ Multimodal semantic search systems are used for:
 
 - **Security & compliance:** detecting sensitive scenes or sounds even when
   they’re unlabeled.
+
+[^1]:
+    [IBM - What is vector embedding?](https://www.ibm.com/think/topics/vector-embedding)
+
+[^2]:
+    [Unveiling Challenges for LLMs in Enterprise Data Engineering, 2025](https://arxiv.org/html/2504.10950)

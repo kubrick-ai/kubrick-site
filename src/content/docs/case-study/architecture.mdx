@@ -8,20 +8,19 @@ import ThemedDiagram from "@components/ThemedDiagram.astro";
 
 ## Ingestion pipeline
 
-The ingestion pipeline is responsible for taking a video input from the user and
-turning it into a set of searchable embeddings stored alongside metadata in the
-database. It does this through an event-driven architecture that decouples video
-upload, embedding generation, and database persistence. The following steps walk
-through this process in detail.
+The ingestion pipeline is responsible for taking a video input from the client
+and turning it into a set of searchable embeddings stored alongside metadata in
+the database. It does this through an event-driven architecture that decouples
+video upload, embedding generation, and database persistence.
 
 ### Video Upload
 
 <ThemedDiagram src='video_upload.png' alt='Video Upload Diagram' />
 
-##### Step 1. User → Storage
+**Step 1. Client → Storage**
 
-The ingestion process begins when a user uploads a video to a private Amazon S3
-bucket. This can be done through two main paths:
+The ingestion process begins when the client uploads a video to a private Amazon
+S3 bucket. This can be done through two main paths:
 
 - **Direct to S3:** Videos can also be uploaded directly to the S3 bucket using
   the AWS Console or other S3 compatible integrations. External access to items
@@ -29,60 +28,62 @@ bucket. This can be done through two main paths:
 
 - **Via the API:** The Kubrick API provides an endpoint that returns a temporary
   presigned URL for uploads. When the endpoint is called, the Upload Link
-  Generator Lambda generates a presigned URL, which allows the client to
-  directly upload the file to S3. A presigned URL grants time-limited permission
-  to access a specific video without making the entire bucket public, ensuring
-  both security and ease of transfer. This method also bypasses the AWS API
-  Gateway’s 10 MB payload limit for direct uploads.
+  Generator Lambda generates a presigned URL, which gives the client temporary
+  permission to upload to the private S3 bucket. This approach also allows us to
+  support uploading videos larger than the AWS API Gateway's 10 MB payload
+  limit.
+
+- **Direct to S3:** Videos can also be uploaded directly to the S3 bucket using
+  the AWS Console or other S3 compatible integrations.
 
 ### Embedding Generation
 
 <ThemedDiagram src='embedding_generation.png' alt='Embedding Generation Diagram' />
 
-##### Step 2. Storage → Embedding Task Producer
+**Step 2. Storage → Embedding Task Producer**
 
 Once the video is in S3, the bucket emits an event that triggers the Embedding
 Task Producer Lambda.
 
-##### Step 3. Embedding Task Producer ⭤ Embedding Model
+**Step 3. Embedding Task Producer ⭤ Embedding Model**
 
-The Producer Lambda performs initial validation to ensure the uploaded video
-meets the embedding model’s processing requirements. It then generates a
-presigned URL to allow the embedding model temporary access to the video file.
+The Producer Lambda performs initial validation to ensure the object is a valid
+video. It then generates a presigned URL to give the embedding model temporary
+access to the video file.
 
-The Lambda then sends this URL to the embedding model’s API, creating an
-embedding job on the external service. The embedding model responds with a job
-ID that will be used for future status checks.
+The Lambda then sends this URL in an embedding request to the embedding model’s
+API. The embedding model creates a job for that embedding request and respond
+with a job ID.
+
+**Step 4. Embedding Task Producer → SQS**
+
+Next, the Lambda publishes a message to an SQS queue. This message contains the
+job ID, which will be used to query the status of the embedding job as well as
+for retrieving the embedding when it is ready.
+
+**Step 5. Embedding Task Producer → Database**
+
+The Lambda also records a new “embedding task” in the database with the status
+`processing`. This allows the client to track embedding progress and handle
+errors. Since generating an embedding is an asynchronous process handled by an
+external service, we track the status of each job in the database until
+completion or failure.
 
 Structured error handling ensures that any ingestion failures are logged both in
 application logs and in the `tasks` database table.
-
-##### Step 4. Embedding Task Producer → SQS
-
-To continue processing asynchronously, the Lambda publishes a message to an SQS
-queue. This message contains the job ID required for later status checks and the
-final embedding retrieval.
-
-##### Step 5. Embedding Task Producer → Database
-
-The Lambda also records a new “embedding task” in the database with its initial
-state set to `processing`. This allows the user to track embedding progress and
-handle errors. Since generating an embedding is an asynchronous process handled
-by an external service, we track the status of each job in the database until
-completion or failure.
 
 ### Database Persistence
 
 <ThemedDiagram src='database_persistence.png' alt='Database Persistence Diagram' />
 
-##### Step 6. SQS ⭤ Embedding Task Consumer
+**Step 6. SQS ⭤ Embedding Task Consumer**
 
 When a message is placed in the queue, SQS triggers the Embedding Task Consumer
 Lambda, which begins polling the embedding model for the job’s status. If the
 job is still processing, the message will be re-queued with a short visibility
 timeout so the Consumer Lambda can check again later.
 
-##### Step 7. Embedding Task Consumer ⭤ Embedding Model
+**Step 7. Embedding Task Consumer ⭤ Embedding Model**
 
 The Lambda checks the job status:
 
@@ -92,7 +93,7 @@ The Lambda checks the job status:
 - If the status is **Ready**, the embeddings and metadata are retrieved from the
   model.
 
-##### Step 8. Embedding Task Consumer → Database
+**Step 8. Embedding Task Consumer → Database**
 
 When embeddings are ready, the Lambda stores them alongside the video’s metadata
 in the database. The embedding task record is then updated to `completed`,
@@ -108,9 +109,9 @@ segments. The following steps describe this process in detail.
 
 <ThemedDiagram src='processing_the_query.png' alt='Processing The Query Diagram' />
 
-##### Step 1. User ⭤ API Gateway
+**Step 1. Client ⭤ API Gateway**
 
-The search process begins when the user sends a request to the `/search`
+The search process begins when the client sends a request to the `/search`
 endpoint. The Kubrick Search API supports multiple query types:
 
 | Query Type | Input Method       | Limitations    |
@@ -129,7 +130,7 @@ avoiding temporary S3 storage. Larger files can be sent via URL.
 Read more about the `/search` endpoint in our
 [API documentation](/api/operations/search)
 
-##### Step 2. API Gateway ⭤ Search Handler Lambda
+**Step 2. API Gateway ⭤ Search Handler Lambda**
 
 Once the request reaches the Search Handler Lambda, it is validated and parsed
 into an object containing query type, filters, and similarity thresholds
@@ -138,7 +139,7 @@ into an object containing query type, filters, and similarity thresholds
 
 <ThemedDiagram src='retrieving_results.png' alt='Retrieving Results Diagram' />
 
-##### Step 3. Search Handler Lambda ⭤ Embedding Model/Cache
+**Step 3. Search Handler Lambda ⭤ Embedding Model/Cache**
 
 Before embedding the query, the Lambda checks the cache to avoid redundant
 embedding model calls. On **cache hit**, the embeddings are retrieved directly
@@ -146,7 +147,7 @@ from the DynamoDB-backed cache. On **cache miss**, the Lambda sends the query to
 the embedding model. Unlike with video ingestion, this call is synchronous. The
 Lambda receives the embeddings, then stores them in DynamoDB.
 
-##### Step 4. Search Handler Lambda ⭤ Database
+**Step 4. Search Handler Lambda ⭤ Database**
 
 The Lambda performs a semantic search using Approximate Nearest Neighbor (ANN)
 search with cosine similarity against stored embeddings in RDS. Filters such as
