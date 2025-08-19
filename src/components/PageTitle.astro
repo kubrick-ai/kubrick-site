@@ -50,7 +50,7 @@ const sectionName = getSectionNameFromSidebar(sidebar)
   )
 }
 
-<h1 id={PAGE_TITLE_ID}>{title}</h1>
+<h1 id={PAGE_TITLE_ID} class={template === "doc" ? "" : "text-center"}>{title}</h1>
 {description && <p>{description}</p>}
 
 {
