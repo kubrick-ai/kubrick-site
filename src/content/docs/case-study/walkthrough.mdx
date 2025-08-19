@@ -8,6 +8,10 @@ import ThemedDiagram from "@components/ThemedDiagram.astro";
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { Image } from "astro:assets";
 import cliDemoDeploy from "@assets/demos/cli-demo-deploy.avifs";
+import ingestionWalkthrough from "@assets/demos/walkthrough/ingestion-walkthrough.mp4";
+import searchTextWalkthrough from "@assets/demos/walkthrough/search-text-walkthrough.mp4";
+import searchImageWalkthrough from "@assets/demos/walkthrough/search-image-walkthrough-1.mp4";
+import searchVideoWalkthrough from "@assets/demos/walkthrough/search-video-walkthrough.mp4";
 
 ## Deployment
 
@@ -124,7 +128,7 @@ Users can upload videos into a private library, which will automatically create
 an embedding task.
 
 <video controls muted width="1000">
-  <source src="/src/assets/demos/walkthrough/ingestion-walkthrough.mp4" type="video/mp4" />
+  <source src={ingestionWalkthrough} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
@@ -153,7 +157,7 @@ Text queries return relevant results even if they describe qualities that arenâ€
 concrete like emotion, tone, composition, visual style, and movement.
 
 <video controls muted width="1000">
-  <source src="/src/assets/demos/walkthrough/search-text-walkthrough.mp4" type="video/mp4" />
+  <source src={searchTextWalkthrough} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
@@ -173,13 +177,13 @@ segment to retrieve the most similar clips in the library.
 #### Image
 
 <video controls muted width="1000">
-  <source src="/src/assets/demos/walkthrough/search-image-walkthrough-1.mp4" type="video/mp4" />
+  <source src={searchImageWalkthrough} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
 #### Video/Audio
 
 <video controls width="1000">
-  <source src="/src/assets/demos/walkthrough/search-video-walkthrough.mp4" type="video/mp4" />
+  <source src={searchVideoWalkthrough} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
