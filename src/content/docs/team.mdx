@@ -5,10 +5,30 @@ editUrl: false
 lastUpdated: true
 ---
 
-import Sidekick from "../../components/Sidekick.astro";
+import { Card, CardGrid } from "@astrojs/starlight/components";
+import ContainerSection from "@components/ContainerSection.astro";
+import LinkedCard from "@components/LinkedCard.astro";
+import LinkedCardGroup from "@components/LinkedCardGroup.astro";
+import Sidekick from "@components/Sidekick.astro";
+import searchTextDemo from "@assets/demos/landing/search-text.webm";
+import searchImageDemo from "@assets/demos/landing/search-image.webm";
+import ingestionDemo from "@assets/demos/landing/ingestion.webm";
 
-<div class="px-24 max-w-6xl mx-auto">
-  <p>
-    Under Construction...
-  </p>
+<div class="px-8 max-w-6xl mx-auto">
+
+<section class="flex justify-center md:justify-start text-center md:text-left ">
+  <h2 class='font-bold text-3xl lg:text-4xl'>Our Team</h2>
+</section>
+
+## Our Team
+
+<LinkedCardGroup>
+  <LinkedCard href='/case-study/intro'>
+    **Case Study** - Learn how we built Kubrick
+  </LinkedCard>
+  <LinkedCard href='/guides/quick-start'>
+    **Get Started** - Self-deploy to AWS in minutes
+  </LinkedCard>
+</LinkedCardGroup>
+
 </div>
