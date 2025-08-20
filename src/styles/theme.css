@@ -19,11 +19,15 @@
 
     --gradient-heading-primary: linear-gradient(
       20deg,
-      #fb923c 0%,
-      #f472b6 40%,
-      #8295ff 100%
+      oklch(0.7576 0.159 55.93),
+      oklch(0.7253 0.1752 349.76)
     );
-    --gradient-heading-secondary: linear-gradient(20deg, #fb923c, #f472b6);
+
+    --gradient-heading-secondary: linear-gradient(
+      20deg,
+      oklch(0.7576 0.159 55.93),
+      oklch(0.7253 0.1752 349.76)
+    );
 
     --gradient-diagram-bg: linear-gradient(
       20deg,

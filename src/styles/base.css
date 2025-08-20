@@ -51,7 +51,7 @@
     font-size: 0.85rem;
   }
 
-  h1:has(+ div.markdown-wrapper) {
+  .docs-header h1 {
     background: var(--gradient-heading-primary);
     background-clip: text;
     -webkit-background-clip: text;
