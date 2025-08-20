@@ -36,6 +36,7 @@
 
     background-color: var(--background);
     min-height: 100svh;
+    min-width: 250px;
 
     overscroll-behavior: none;
     color: var(--foreground);
