@@ -31,8 +31,6 @@ if (image) {
 }
 ---
 
-<div class="header-spacer z-3 absolute top-0 left-0 w-full h-15"/>
-
 <section class="hero-container h-svh w-full pb-20 flex items-center justify-center relative overflow-hidden">
   <SpectrumGradient class="rotating-bg absolute top-0 left-0 w-full h-full z-0 opacity-100 dark:opacity-60" style="object-fit: cover;" preserveAspectRatio="xMidYMid slice" />
   <div class="max-w-6xl w-full px-12 flex flex-col md:flex-row items-center gap-4 md:gap-16 relative z-10">
@@ -61,10 +59,6 @@ if (image) {
 </section>
 
 <style>
-.header-spacer {
-  background-color: var(--background);
-}
-
 .hero-container::after {
   content: '';
   position: absolute;
@@ -83,7 +77,6 @@ if (image) {
  }
 
 .rotating-bg {
-  position: fixed;
   animation: rotate 10s linear infinite;
   transform-origin: center;
   width: max(141.42vw, 141.42vh);
