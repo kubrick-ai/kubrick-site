@@ -141,6 +141,9 @@
   }
 
   .markdown-wrapper {
+    background-color: var(--background);
+    position: relative;
+    z-index: 1;
     padding-top: 2rem;
     padding-bottom: 3rem;
   }

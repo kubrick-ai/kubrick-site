@@ -54,6 +54,7 @@ const { hasSidebar } = Astro.locals.starlightRoute
     flex-direction: column;
     min-height: 100svh;
     position: relative;
+    overflow: hidden;
   }
 
   .layout__grid {
@@ -68,7 +69,8 @@ const { hasSidebar } = Astro.locals.starlightRoute
   }
 
   .layout__header {
-    background-color: color-mix(in oklab, var(--background) 60%, transparent);
+    /* background-color: color-mix(in oklab, var(--background) 60%, transparent); */
+    background-color: var(--background);
     border-color: color-mix(in oklab, var(--border) 30%, transparent);
     border-bottom-width: 1px;
     border-bottom-style: solid;
@@ -91,6 +93,7 @@ const { hasSidebar } = Astro.locals.starlightRoute
   }
 
   .main {
+    z-index: 1;
     display: flex;
     flex: 1 1 0%;
     flex-direction: column;
@@ -141,6 +144,8 @@ const { hasSidebar } = Astro.locals.starlightRoute
   }
 
   .footer {
+    background-color: var(--background);
+    z-index: 1;
     border-color: color-mix(in oklab, var(--border) 30%, transparent);
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
