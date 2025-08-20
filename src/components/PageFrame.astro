@@ -102,18 +102,18 @@ const { hasSidebar } = Astro.locals.starlightRoute
     flex: 1 1 0%;
   }
 
-  @media (min-width: 1024px) {
-    .container-wrapper-main {
-      gap: 3.5rem;
-      grid-template-columns: 240px minmax(0, 1fr);
-    }
-  }
-
   @media (min-width: 768px) {
     .container-wrapper-main {
       gap: 2.5rem;
       grid-template-columns: 260px minmax(0, 1fr);
       display: grid;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-wrapper-main {
+      gap: 3.5rem;
+      grid-template-columns: 240px minmax(0, 1fr);
     }
   }
 
