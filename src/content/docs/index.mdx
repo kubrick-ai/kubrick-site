@@ -27,9 +27,9 @@ import ContainerSection from "@components/ContainerSection.astro";
 import LinkedCard from "@components/LinkedCard.astro";
 import LinkedCardGroup from "@components/LinkedCardGroup.astro";
 import Sidekick from "@components/Sidekick.astro";
-import searchTextDemo from "@assets/demos/landing/search-text.avifs";
-import searchImageDemo from "@assets/demos/landing/search-image.avifs";
-import ingestionDemo from "@assets/demos/landing/ingestion.avifs";
+import searchTextDemo from "@assets/demos/landing/search-text.webm";
+import searchImageDemo from "@assets/demos/landing/search-image.webm";
+import ingestionDemo from "@assets/demos/landing/ingestion.webm";
 
 <div class="px-8 max-w-7xl mx-auto">
 
@@ -46,19 +46,32 @@ never spoken.
   <Sidekick
     title='Semantic Video Search'
     description='Search by concepts and context, not just keywords. Find moments based on meaning and intent.'
-    image={searchTextDemo}
-  />
+  >
+    <video autoplay loop muted width="1000">
+      <source src={searchTextDemo} type="video/webm" />
+      Your browser does not support the video tag.
+    </video>
+  </Sidekick>
   <Sidekick
     title='Beyond Text Search'
     description='Retrieve results using image, audio, or video media queries'
-    image={searchImageDemo}
+    video={searchImageDemo}
     reversed={true}
-  />
+  >
+    <video autoplay loop muted width="1000">
+      <source src={searchImageDemo} type="video/webm" />
+      Your browser does not support the video tag.
+    </video>
+  </Sidekick>
   <Sidekick
     title='Automated Ingestion Pipeline'
     description='Upload using the API, or add videos to your S3 bucket through an external integration. The pipeline takes care of the rest.'
-    image={ingestionDemo}
-  />
+  >
+    <video autoplay loop muted width="1000">
+      <source src={searchImageDemo} type="video/webm" />
+      Your browser does not support the video tag.
+    </video>
+  </Sidekick>
 </section>
 
 ## Use Cases
