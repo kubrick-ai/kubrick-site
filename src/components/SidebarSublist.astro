@@ -32,7 +32,7 @@ function hasCurrentPage(entries: StarlightRouteData['sidebar']): boolean {
       <div class="container-sidebar-entry">
         <details open={hasCurrentPage(entry.entries)}>
           <summary class="entry-title">
-            <span class="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+            <span>
               {entry.label}
             </span>
             <Icon name="right-caret" class="caret" size="1.25rem" />
@@ -67,6 +67,13 @@ function hasCurrentPage(entries: StarlightRouteData['sidebar']): boolean {
     justify-content: space-between;
     cursor: pointer;
     user-select: none;
+  }
+
+  .entry-title span {
+    background: var(--gradient-heading-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
   .entry-title::marker,
