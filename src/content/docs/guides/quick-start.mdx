@@ -8,8 +8,7 @@ sidebar:
 import { Steps } from "@astrojs/starlight/components";
 import { Aside } from "@astrojs/starlight/components";
 import { Image } from "astro:assets";
-import cliDemoDeploy from "@assets/demos/cli-demo-deploy.avifs";
-import cliDemoDestroy from "@assets/demos/cli-demo-destroy.avifs";
+import { MEDIA_URLS } from "/src/constants";
 
 Get Kubrick deployed to AWS in minutes using our interactive CLI tool. The CLI
 handles all the complex Terraform operations and guides you through the setup
@@ -100,7 +99,10 @@ Before starting, ensure you have the following installed and configured:
 
 </Steps>
 
-<Image src={cliDemoDeploy} alt='CLI Deployment Demo' width={800} height={800} />
+<video autoplay loop muted webkit-playsinline playsinline>
+  <source src={MEDIA_URLS.cliDeployment} type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
 
 ## Testing Your Deployment
 
@@ -150,7 +152,10 @@ Your Kubrick deployment includes:
 
 To destroy your deployment, just type `kubrick destroy`.
 
-<Image src={cliDemoDestroy} alt='cli destroy demo' width={800} height={800} />
+<video autoplay loop muted webkit-playsinline playsinline>
+  <source src={MEDIA_URLS.cliDestroy} type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
 
 ## Next Steps
 

@@ -194,7 +194,7 @@ paths:
                   type: string
                   enum: [text, image, video, audio]
                   description: |
-                    Specifies the input modality for the search query: text, image, video, or audio.
+                    Specifies the input modality for the search query: text, image, video, or audio. Supported audio formats: WAV (uncompressed), MP3 (lossy), FLAC (lossless).
                 query_text:
                   type: string
                   description: Text query used when query_type is set to "text".

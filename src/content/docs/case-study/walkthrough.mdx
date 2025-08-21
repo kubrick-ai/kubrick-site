@@ -4,14 +4,9 @@ sidebar:
   order: 4
 ---
 
-import ThemedDiagram from "@components/ThemedDiagram.astro";
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { Image } from "astro:assets";
-import cliDemoDeploy from "@assets/demos/cli-demo-deploy.avifs";
-import ingestionWalkthrough from "@assets/demos/walkthrough/ingestion-walkthrough.mp4";
-import searchTextWalkthrough from "@assets/demos/walkthrough/search-text-walkthrough.mp4";
-import searchImageWalkthrough from "@assets/demos/walkthrough/search-image-walkthrough-1.mp4";
-import searchVideoWalkthrough from "@assets/demos/walkthrough/search-video-walkthrough.mp4";
+import { MEDIA_URLS } from "/src/constants";
 
 ## Deployment
 
@@ -25,7 +20,10 @@ cd kubrick/cli && npm run build
 kubrick deploy
 ```
 
-<Image src={cliDemoDeploy} alt='CLI Deployment Demo' width={800} height={800}/>
+<video autoplay loop muted webkit-playsinline playsinline>
+  <source src={MEDIA_URLS.cliDeployment} type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
 
 Full CLI deployment documentation is available [here](/guides/quick-start).
 
@@ -126,7 +124,7 @@ Users can upload videos into a private library, which will automatically create
 an embedding task.
 
 <video controls muted class="rounded-lg drop-shadow-lg">
-  <source src={ingestionWalkthrough} type="video/mp4" />
+  <source src={MEDIA_URLS.ingestionDemo} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
@@ -136,7 +134,7 @@ Text queries return relevant results even if they describe qualities that arenâ€
 concrete like emotion, tone, composition, visual style, and movement.
 
 <video controls muted class="rounded-lg drop-shadow-lg">
-  <source src={searchTextWalkthrough} type="video/mp4" />
+  <source src={MEDIA_URLS.textQueryDemo} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
@@ -150,13 +148,13 @@ segment to retrieve the most similar clips in the library.
 #### Image
 
 <video controls muted class="rounded-lg drop-shadow-lg">
-  <source src={searchImageWalkthrough} type="video/mp4" />
+  <source src={MEDIA_URLS.imageQueryDemo} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
 
 #### Video/Audio
 
 <video controls class="rounded-lg drop-shadow-lg">
-  <source src={searchVideoWalkthrough} type="video/mp4" />
+  <source src={MEDIA_URLS.videoQueryDemo} type="video/mp4" />
   Your browser does not support the video tag.
 </video>

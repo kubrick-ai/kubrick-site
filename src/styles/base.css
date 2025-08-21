@@ -35,6 +35,7 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
     background-color: var(--background);
+    min-height: 100vh;
     min-height: 100svh;
     min-width: 250px;
 
@@ -73,6 +74,7 @@
     margin-right: auto;
     padding: 0 1.5rem;
     width: 100%;
+    border-color: rgba(255, 255, 255, 0.3);
     border-color: color-mix(in oklab, var(--border) 30%, transparent);
     border-right-style: solid;
     border-left-style: solid;
@@ -91,6 +93,7 @@
   }
 
   .container-section {
+    border-color: rgba(255, 255, 255, 0.3);
     border-color: color-mix(in oklab, var(--border) 30%, transparent);
     border-bottom-width: 1px;
     border-bottom-style: solid;
@@ -375,6 +378,7 @@
     padding-bottom: 0.75rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    background-color: rgba(255, 255, 255, 0.5);
     background-color: color-mix(in oklab, var(--muted) 50%, transparent);
     border-width: 1px;
     border-radius: var(--radius);
