@@ -1,0 +1,101 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "@astrojs/starlight/components";
+import type { StarlightIcon } from "@astrojs/starlight/types";
+import { getGitHubAvatarFromSocialLinks } from "@utils/github";
+
+interface SocialLink {
+  url: string;
+  label: string;
+  icon: StarlightIcon; // Use proper Starlight icon type
+}
+
+interface Props extends Omit<HTMLAttributes<"div">, "href"> {
+  name: string;
+  location?: string;
+  bio?: string;
+  profilePictureUrl?: string;
+  socialLinks?: SocialLink[];
+}
+
+const {
+  name,
+  location,
+  bio,
+  profilePictureUrl,
+  socialLinks = [],
+  ...rest
+} = Astro.props;
+
+// Auto-fetch GitHub avatar if no profilePictureUrl is provided
+const avatarSrc =
+  profilePictureUrl || (await getGitHubAvatarFromSocialLinks(socialLinks));
+---
+
+<article
+  class='bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-[var(--radius)] p-6 transition-colors duration-150 hover:bg-[color-mix(in_oklab,var(--muted)_50%,transparent)] flex flex-col items-center text-center w-full max-w-sm h-full mt-1'
+  {...rest}
+>
+  <!-- Profile Picture or Initials -->
+  <div class='relative'>
+    {
+      avatarSrc ? (
+        <img
+          src={avatarSrc}
+          alt={`${name}'s profile picture`}
+          class='w-40 h-40 rounded-full object-cover border-2 border-[var(--border)]'
+          loading='lazy'
+        />
+      ) : (
+        <div class='w-20 h-20 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] border-2 border-[var(--border)] flex items-center justify-center text-xl font-semibold'>
+          {name
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase())
+            .join("")
+            .slice(0, 2)}
+        </div>
+      )
+    }
+  </div>
+
+  <!-- Content container with flex-grow to push social links to bottom -->
+  <div class='flex flex-col justify-around items-center flex-grow mb-4'>
+    <!-- Name -->
+    <h3
+      class='text-xl font-semibold bg-[var(--gradient-heading-secondary)] bg-clip-text text-transparent'
+    >
+      {name}
+    </h3>
+
+    <p class='text-md italic'>
+      {location}
+    </p>
+    <!-- Bio -->
+    {
+      bio && (
+        <p class='text-[var(--muted-foreground)] text-sm leading-relaxed'>
+          {bio}
+        </p>
+      )
+    }
+  </div>
+
+  <!-- Social Links - pinned to bottom -->
+  {
+    socialLinks.length > 0 && (
+      <div class='flex space-x-3 mt-auto'>
+        {socialLinks.map(({ url, icon, label }) => (
+          <a
+            href={url}
+            aria-label={`${name}'s ${label}`}
+            target='_blank'
+            rel='noopener noreferrer'
+            class='w-8 h-8 rounded-full bg-[var(--muted)] hover:bg-[var(--accent)] text-[var(--muted-foreground)] hover:text-[var(--accent-foreground)] transition-colors duration-150 flex items-center justify-center'
+          >
+            <Icon name={icon} class='w-4 h-4' />
+          </a>
+        ))}
+      </div>
+    )
+  }
+</article>
