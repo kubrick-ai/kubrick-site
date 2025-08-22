@@ -43,11 +43,11 @@ const avatarSrc =
         <img
           src={avatarSrc}
           alt={`${name}'s profile picture`}
-          class='w-40 h-40 rounded-full object-cover border-2 border-[var(--border)]'
+          class='w-30 h-30 rounded-full object-cover border-2 border-[var(--border)]'
           loading='lazy'
         />
       ) : (
-        <div class='w-20 h-20 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] border-2 border-[var(--border)] flex items-center justify-center text-xl font-semibold'>
+        <div class='w-30 h-30 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] border-2 border-[var(--border)] flex items-center justify-center text-xl font-semibold'>
           {name
             .split(" ")
             .map((word) => word.charAt(0).toUpperCase())
