@@ -7,12 +7,8 @@ lastUpdated: true
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 import ContainerSection from "@components/ContainerSection.astro";
-import LinkedCard from "@components/LinkedCard.astro";
 import LinkedCardGroup from "@components/LinkedCardGroup.astro";
-import Sidekick from "@components/Sidekick.astro";
-import searchTextDemo from "@assets/demos/landing/search-text.webm";
-import searchImageDemo from "@assets/demos/landing/search-image.webm";
-import ingestionDemo from "@assets/demos/landing/ingestion.webm";
+import ProfileCard from "@components/ProfileCard.astro";
 
 <div class="px-8 max-w-6xl mx-auto">
 
@@ -22,13 +18,10 @@ import ingestionDemo from "@assets/demos/landing/ingestion.webm";
 
 ## Our Team
 
-<LinkedCardGroup>
-  <LinkedCard href='/case-study/intro'>
-    **Case Study** - Learn how we built Kubrick
-  </LinkedCard>
-  <LinkedCard href='/guides/quick-start'>
-    **Get Started** - Self-deploy to AWS in minutes
-  </LinkedCard>
-</LinkedCardGroup>
+<CardGrid>
+  <ProfileCard name="Daniel Chae" bio="Full-Stack Engineer" github="dchae"/>
+</CardGrid>
 
 </div>
+
+Vispyr VIspyr Vlspyr
