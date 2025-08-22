@@ -10,5 +10,5 @@ export const MEDIA_URLS = {
   textQueryDemoLanding: "https://i.imgur.com/h1s9lZM.mp4",
   imageQueryDemoLanding: "https://i.imgur.com/5w9Hr7h.mp4",
   ingestionDemoLanding: "https://i.imgur.com/vUrQ7lU.mp4",
-  bustaAvatar: "https://i.imgur.com/pTBXRSs.jpeg",
+  bustaAvatar: "https://i.imgur.com/8bEHrwi.jpeg",
 };
