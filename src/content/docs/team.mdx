@@ -12,14 +12,15 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 import ContainerSection from "@components/ContainerSection.astro";
 import LinkedCardGroup from "@components/LinkedCardGroup.astro";
 import ProfileCard from "@components/ProfileCard.astro";
+import { MEDIA_URLS } from "/src/constants"
 
-<div class="px-8 max-w-6xl mx-auto">
+<div class="px-8 max-w-375 mx-auto">
 
   <section class="flex justify-center md:justify-start text-center md:text-left ">
     <h2 class='font-bold text-3xl lg:text-4xl'>Our Team</h2>
   </section>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6 justify-items-center items-start">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-5 justify-items-center items-start">
     <ProfileCard
       name="Daniel Chae"
       location="San Francisco, CA"
@@ -44,7 +45,9 @@ import ProfileCard from "@components/ProfileCard.astro";
       location="San Jose, CA"
       socialLinks={[
         { url: "https://github.com/dom-mp", label: "GitHub", icon: "github" },
-        { url: "https://linkedin.com/in/dom-mp", label: "LinkedIn", icon: "linkedin" }
+        { url: "https://linkedin.com/in/dom-mp", label: "LinkedIn", icon: "linkedin" },
+        { url: "mailto:dmpcreates@gmail.com", label: "Email", icon: "email" }
+
       ]}
     />
 
@@ -55,6 +58,13 @@ import ProfileCard from "@components/ProfileCard.astro";
         { url: "https://github.com/JorgeAndArias", label: "GitHub", icon: "github" },
         { url: "https://linkedin.com/in/jorgeandarias", label: "LinkedIn", icon: "linkedin" }
       ]}
+    />
+
+    <ProfileCard
+      name="Busta"
+      location="Melbourne, AU"
+      bio="Official Team Mascot"
+      profilePictureUrl={MEDIA_URLS.bustaAvatar}
     />
 
   </div>
