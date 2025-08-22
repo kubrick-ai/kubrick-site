@@ -1,5 +1,8 @@
 ---
-title: "Our Team"
+title: ""
+head:
+  - tag: title
+    content: "Our Team"
 template: splash
 editUrl: false
 lastUpdated: true
@@ -12,16 +15,48 @@ import ProfileCard from "@components/ProfileCard.astro";
 
 <div class="px-8 max-w-6xl mx-auto">
 
-<section class="flex justify-center md:justify-start text-center md:text-left ">
-  <h2 class='font-bold text-3xl lg:text-4xl'>Our Team</h2>
-</section>
+  <section class="flex justify-center md:justify-start text-center md:text-left ">
+    <h2 class='font-bold text-3xl lg:text-4xl'>Our Team</h2>
+  </section>
 
-## Our Team
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6 justify-items-center items-start">
+    <ProfileCard
+      name="Daniel Chae"
+      location="San Francisco, CA"
+      socialLinks={[
+        { url: "https://github.com/dchae", label: "GitHub", icon: "github" },
+        { url: "https://linkedin.com/in/danieljchae", label: "LinkedIn", icon: "linkedin" },
+        { url: "mailto:daniel.jiwoong@gmail.com", label: "Email", icon: "email" }
+      ]}
+    />
 
-<CardGrid>
-  <ProfileCard name="Daniel Chae" bio="Full-Stack Engineer" github="dchae"/>
-</CardGrid>
+    <ProfileCard
+      name="Daniel Singer"
+      location="Melbourne, AU"
+      socialLinks={[
+        { url: "https://github.com/dan-singer-aus", label: "GitHub", icon: "github" },
+        { url: "https://linkedin.com/in/daniel-singer-aus", label: "LinkedIn", icon: "linkedin" }
+      ]}
+    />
+
+    <ProfileCard
+      name="Dominique Morales Perez"
+      location="San Jose, CA"
+      socialLinks={[
+        { url: "https://github.com/dom-mp", label: "GitHub", icon: "github" },
+        { url: "https://linkedin.com/in/dom-mp", label: "LinkedIn", icon: "linkedin" }
+      ]}
+    />
+
+    <ProfileCard
+      name="Jorge Arias"
+      location="Melbourne, AU"
+      socialLinks={[
+        { url: "https://github.com/JorgeAndArias", label: "GitHub", icon: "github" },
+        { url: "https://linkedin.com/in/jorgeandarias", label: "LinkedIn", icon: "linkedin" }
+      ]}
+    />
+
+  </div>
 
 </div>
-
-Vispyr VIspyr Vlspyr
