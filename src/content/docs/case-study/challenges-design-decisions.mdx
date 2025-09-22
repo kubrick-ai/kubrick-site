@@ -12,7 +12,7 @@ import ThemedDiagram from "@components/ThemedDiagram.astro";
 
 Embeddings are the central mechanism for similarity search, so finding a
 suitable embedding model was essential. We originally started with
-`voyage-multimodal-3`, which only has native support image and text modalities.
+`voyage-multimodal-3`, which only has native support for image and text modalities.
 We chunked content into segments, extracted frames and audio transcriptions,
 then embedded those components. This approach captured both visual and speech
 modalities, but lost significant meaning since frames are extracted at intervals
